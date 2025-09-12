@@ -1,0 +1,12 @@
+:root[data-theme='dark'] {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --accent-color: #007acc;
+  --border-color: #333333;
+}
+
+.site-header {
+  background: var(--bg-color);
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+}

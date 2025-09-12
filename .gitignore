@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# APM dependencies (similar to node_modules)
+apm_modules/
+
+# Development files
+.DS_Store
+*.log
+copilot.log
+
+# Build artifacts  
+*.tsbuildinfo

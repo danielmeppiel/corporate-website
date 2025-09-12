@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Website</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <nav class="nav">
+                <div class="nav-brand">
+                    <h1>Corporate Inc.</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="main">
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <h2>Welcome to Corporate Inc.</h2>
+                    <p>Building the future with AI-Native Development</p>
+                    <button class="cta-button" onclick="showMessage()">Get Started</button>
+                </div>
+            </section>
+
+            <section id="about" class="section">
+                <div class="container">
+                    <h2>About Us</h2>
+                    <p>We are a forward-thinking company that leverages APM (Agent Package Manager) to ensure consistent, compliant, and well-designed digital experiences.</p>
+                    <div class="features">
+                        <div class="feature-card">
+                            <h3>🔒 GDPR Compliant</h3>
+                            <p>All our processes follow strict data privacy regulations</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>♿ Accessible Design</h3>
+                            <p>WCAG 2.1 AA compliant interfaces for everyone</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>🚀 AI-Native</h3>
+                            <p>Built with Agent Package Manager for consistent workflows</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="services" class="section">
+                <div class="container">
+                    <h2>Our Services</h2>
+                    <ul class="services-list">
+                        <li>Web Development with Accessibility Standards</li>
+                        <li>GDPR Compliance Consulting</li>
+                        <li>AI-Native Development Training</li>
+                        <li>Design System Implementation</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <div class="container">
+                    <h2>Contact Us</h2>
+                    <form class="contact-form" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label for="name">Name *</label>
+                            <input type="text" id="name" name="name" required aria-describedby="name-help">
+                            <small id="name-help">Your full name</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required aria-describedby="email-help">
+                            <small id="email-help">We'll never share your email with anyone else</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="4" required aria-describedby="message-help"></textarea>
+                            <small id="message-help">Tell us how we can help you</small>
+                        </div>
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Corporate Inc. All rights reserved. | Built with APM Dependencies System</p>
+                <p class="privacy-notice">
+                    <small>This website follows GDPR compliance standards and accessibility guidelines through APM package management.</small>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+</body>
+</html>

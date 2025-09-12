@@ -1,0 +1,36 @@
+---
+applyTo: "scripts/**/*.{sh,yml,yaml}"
+description: "Deployment and operations scripting standards"
+---
+
+# Deployment & Operations
+
+## Shell Scripting Standards
+- Use `set -e` for strict error handling
+- Add proper error checking and logging
+- Use absolute paths where possible
+- Include helpful usage messages
+
+## CI/CD Pipeline
+- Implement proper build stages
+- Run tests before deployment
+- Use environment-specific configurations
+- Implement rollback procedures
+
+## Security
+- Never hardcode secrets in scripts
+- Use environment variables for configuration
+- Implement proper access controls
+- Audit deployment logs
+
+## Monitoring
+- Add health checks to deployment scripts
+- Implement proper logging
+- Set up alerts for deployment failures
+- Monitor application performance post-deployment
+
+## Documentation
+- Document deployment procedures
+- Maintain runbooks for common operations
+- Update deployment guides with changes
+- Include troubleshooting steps

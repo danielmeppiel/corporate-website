@@ -1,0 +1,36 @@
+---
+applyTo: "docs/**/*.md"
+description: "Documentation writing standards and guidelines"
+---
+
+# Documentation Standards
+
+## Structure
+- Use clear headings and hierarchical organization
+- Include table of contents for long documents
+- Start with overview and purpose
+- End with examples and next steps
+
+## Writing Style
+- Use active voice and clear language
+- Write for your audience (technical vs. non-technical)
+- Include code examples where relevant
+- Keep paragraphs and sentences concise
+
+## API Documentation
+- Document all endpoints with examples
+- Include request/response schemas
+- Add error code explanations
+- Provide authentication details
+
+## Code Examples
+- Use syntax highlighting
+- Test all code examples
+- Include expected outputs
+- Show both success and error cases
+
+## Maintenance
+- Review docs with code changes
+- Keep examples up to date
+- Remove outdated information
+- Add version information where relevant

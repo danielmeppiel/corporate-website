@@ -1,0 +1,196 @@
+// Contact Form Styles - Following Design System Standards from APM Dependencies
+// This file demonstrates how design guidelines are automatically applied
+
+// Import design system tokens (would be from design system package)
+@use '../styles/tokens' as tokens;
+
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: tokens.$space-4;
+  
+  // Form group spacing following 8px grid system
+  .form-group {
+    margin-bottom: tokens.$space-4;
+  }
+  
+  // Labels following typography standards
+  .form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: tokens.$space-1;
+    color: tokens.$text-primary;
+    font-size: tokens.$font-size-base;
+    line-height: 1.5; // Accessibility requirement: 1.5x minimum
+  }
+  
+  // Input fields following accessibility guidelines
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: tokens.$space-2;
+    border: 2px solid tokens.$border-color;
+    border-radius: tokens.$radius-md;
+    font-size: tokens.$font-size-base;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 44px; // Accessibility requirement: minimum touch target
+    
+    // Focus states for accessibility (WCAG 2.1 AA)
+    &:focus {
+      outline: none;
+      border-color: tokens.$primary-color;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    // Error states with proper contrast
+    &--error {
+      border-color: tokens.$error-color;
+      
+      &:focus {
+        border-color: tokens.$error-color;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+    }
+    
+    // Disabled states
+    &:disabled {
+      background-color: tokens.$surface-disabled;
+      color: tokens.$text-disabled;
+      cursor: not-allowed;
+    }
+    
+    // Placeholder text contrast
+    &::placeholder {
+      color: tokens.$text-secondary;
+      opacity: 1; // Firefox fix
+    }
+  }
+  
+  // Textarea specific styling
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  // Help text following design system
+  .form-help {
+    display: block;
+    margin-top: tokens.$space-1;
+    font-size: tokens.$font-size-sm;
+    color: tokens.$text-secondary;
+    line-height: 1.4;
+  }
+  
+  // Error messages with proper ARIA support
+  .form-error {
+    display: block;
+    margin-top: tokens.$space-1;
+    font-size: tokens.$font-size-sm;
+    color: tokens.$error-color;
+    font-weight: 500;
+    
+    // Global form errors
+    &--global {
+      margin-top: tokens.$space-3;
+      padding: tokens.$space-2;
+      background-color: rgba(220, 38, 38, 0.1);
+      border: 1px solid tokens.$error-color;
+      border-radius: tokens.$radius-md;
+    }
+  }
+  
+  // Button styling following design system
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: tokens.$space-2 tokens.$space-4;
+    font-size: tokens.$font-size-base;
+    font-weight: 600;
+    line-height: 1.5;
+    border: none;
+    border-radius: tokens.$radius-md;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-height: 44px; // Accessibility requirement
+    min-width: 44px;  // Accessibility requirement
+    
+    // Disabled state
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    // Focus states for accessibility
+    &:focus {
+      outline: 2px solid tokens.$primary-color;
+      outline-offset: 2px;
+    }
+    
+    // Primary button variant
+    &--primary {
+      background-color: tokens.$primary-color;
+      color: white;
+      
+      &:hover:not(:disabled) {
+        background-color: tokens.$primary-color-dark;
+        transform: translateY(-1px);
+        box-shadow: tokens.$shadow-md;
+      }
+      
+      &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: tokens.$shadow-sm;
+      }
+    }
+  }
+}
+
+// Responsive design - Mobile first approach
+@media (max-width: 768px) {
+  .contact-form {
+    padding: tokens.$space-2;
+    
+    .form-group {
+      margin-bottom: tokens.$space-3;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .contact-form {
+    .form-input,
+    .form-textarea {
+      border-width: 3px;
+    }
+    
+    .btn--primary {
+      border: 2px solid currentColor;
+    }
+  }
+}
+
+// Reduced motion support for accessibility
+@media (prefers-reduced-motion: reduce) {
+  .contact-form {
+    .form-input,
+    .form-textarea,
+    .btn {
+      transition: none;
+    }
+    
+    .btn:hover:not(:disabled) {
+      transform: none;
+    }
+  }
+}
