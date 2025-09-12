@@ -1,6 +1,6 @@
 # Corporate Website - APM Enterprise Showcase
 
-> **🚀 This project demonstrates [APM CLI](https://github.com/danielmeppiel/apm-cli) capabilities** - A complete showcase of enterprise dependency composition, AI-native workflows, and automatic compliance enforcement.
+> **🚀 This project demonstrates [APM CLI](https://github.com/github/apm-cli) capabilities** - A complete showcase of enterprise dependency composition, AI-native workflows, and automatic compliance enforcement.
 
 **Enterprise-grade web development with automatic compliance and design enforcement** - Demonstrating APM dependency composition for consistent, compliant, and accessible development.
 
@@ -13,7 +13,7 @@
 
 ## Real Enterprise Scenario
 
-🏢 **"Corporate Website"** - Project combining [`danielmeppiel/compliance-rules`](https://github.com/danielmeppiel/compliance-rules) + [`danielmeppiel/design-guidelines`](https://github.com/danielmeppiel/design-guidelines) for automatic compliance + design enforcement
+🏢 **"Corporate Website"** - Project combining [`github/compliance-rules`](https://github.com/github/compliance-rules) + [`github/design-guidelines`](https://github.com/github/design-guidelines) for automatic compliance + design enforcement
 
 **Result**: Your AI agents automatically know your company's security standards, design guidelines, and compliance requirements **before** they start coding.
 
@@ -26,7 +26,7 @@
 
 ```bash
 # 1. Clone and enter the project
-git clone https://github.com/danielmeppiel/corporate-website
+git clone https://github.com/github/corporate-website
 cd corporate-website
 
 # 2. Set up tokens and runtime (if not already done)
@@ -58,8 +58,8 @@ author: Corporate Team
 
 dependencies:
   apm:
-    - danielmeppiel/compliance-rules    # GDPR, legal review, audit trails
-    - danielmeppiel/design-guidelines   # WCAG 2.1 AA, design system
+    - github/compliance-rules    # GDPR, legal review, audit trails
+    - github/design-guidelines   # WCAG 2.1 AA, design system
   mcp:
     - io.github.github/github-mcp-server
 
@@ -222,7 +222,7 @@ apm compile             # Generate AGENTS.md from dependencies
 
 ### Enterprise Setup (Recommended)
 ```bash
-git clone https://github.com/danielmeppiel/corporate-website
+git clone https://github.com/github/corporate-website
 cd corporate-website
 apm install
 ```
@@ -235,10 +235,10 @@ apm compile             # Generate context from dependencies
 
 ## Next Steps
 
-- 📖 [APM CLI Documentation](https://github.com/danielmeppiel/apm-cli) - Complete APM usage guide
+- 📖 [APM CLI Documentation](https://github.com/github/apm-cli) - Complete APM usage guide
 - 🚀 [Getting Started with AI-Native Development](https://danielmeppiel.github.io/awesome-ai-native) - Learning path and framework
-- 🏢 [Enterprise Dependencies](https://github.com/danielmeppiel/compliance-rules) - GDPR compliance package
-- 🎨 [Design Standards](https://github.com/danielmeppiel/design-guidelines) - Accessibility and design system package
+- 🏢 [Enterprise Dependencies](https://github.com/github/compliance-rules) - GDPR compliance package
+- 🎨 [Design Standards](https://github.com/github/design-guidelines) - Accessibility and design system package
 - 🤖 [Agents.md Standard](https://github.com/joggrdocs/agents.md) - Universal AI agent compatibility
 
 ---

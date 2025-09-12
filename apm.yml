@@ -5,8 +5,8 @@ author: Corporate Team
 
 dependencies:
   apm:
-    - danielmeppiel/compliance-rules
-    - danielmeppiel/design-guidelines
+    - github/compliance-rules
+    - github/design-guidelines
   mcp:
     - io.github.github/github-mcp-server
 

@@ -23,8 +23,8 @@ You are building a corporate website that must meet strict compliance requiremen
 ## Dependencies Available
 
 The project includes these APM dependencies:
-- `danielmeppiel/compliance-rules` - Legal compliance, GDPR, audit trails
-- `danielmeppiel/design-guidelines` - Accessibility, design system, UI standards
+- `github/compliance-rules` - Legal compliance, GDPR, audit trails
+- `github/design-guidelines` - Accessibility, design system, UI standards
 
 ## Requirements
 
