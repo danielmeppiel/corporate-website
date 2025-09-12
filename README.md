@@ -94,6 +94,62 @@ apm run legal-review       # Legal compliance verification
 apm run gdpr-check         # Data handling assessment
 ```
 
+## 🧠 Context Optimization Engine
+
+**The Challenge**: AI agents need relevant context without cognitive overload, but every agent tool has different configuration formats.
+
+**APM's Architectural Innovation**: 
+1. **Source**: Modular `.instructions.md` files with YAML `applyTo` patterns for maintainable governance
+2. **Optimization**: Mathematical algorithms analyze patterns for optimal placement  
+3. **Output**: Industry-standard `AGENTS.md` files compatible with all major coding agents
+
+### Smart Compilation in Action
+
+```bash
+# See the compilation workflow
+apm compile --dry-run
+
+# View detailed optimization analysis  
+apm compile --verbose --dry-run
+```
+
+**Source → Compilation → Universal Output:**
+```yaml
+# Source: .apm/instructions/api-development.instructions.md
+---
+applyTo: "backend/**/*.py"
+---
+# Backend API development standards using FastAPI...
+```
+↓ (APM optimization algorithms) ↓
+```markdown
+# Output: backend/api/AGENTS.md (industry standard)
+## Files matching `backend/**/*.py`
+<!-- Source: local .apm/instructions/api-development.instructions.md -->
+# Backend API development standards using FastAPI...
+```
+
+**Real optimization from this project:**
+```
+Mathematical Optimization Analysis
+Pattern                   Distribution   Strategy        Coverage Guarantee   
+backend/**/*.py           0.056          Single Point    ✅ Perfect           
+**/*.{py,js,ts,tsx...}    0.678          Selective       ✅ Verified          
+**/*.{scss,css,sass}      0.299          Single Point    ✅ Perfect
+
+Performance Metrics:
+• Context Efficiency: 49.6% 
+• Universal Output: ✅ Standard AGENTS.md format for all agents
+```
+
+### Universal Agent Compatibility
+
+✅ Via [AGENTS.md standard](https://agents.md)
+
+**Architectural Advantage**: APM provides the missing layer between modular context governance (`.instructions.md` source) and universal agent compatibility (`AGENTS.md` output), with mathematical optimization ensuring minimal cognitive load for coding agents.
+
+---
+
 ## Why APM for Enterprise Development?
 
 Replace inconsistent compliance with engineered enterprise standards:
