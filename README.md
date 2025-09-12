@@ -96,57 +96,66 @@ apm run gdpr-check         # Data handling assessment
 
 ## 🧠 Context Optimization Engine
 
-**The Challenge**: AI agents need relevant context without cognitive overload, but every agent tool has different configuration formats.
+**The Challenge**: AI agents need exactly the right context for their current task, but loading everything creates cognitive overload, while missing key information breaks workflows.
 
-**APM's Architectural Innovation**: 
-1. **Source**: Modular `.instructions.md` files with YAML `applyTo` patterns for maintainable governance
-2. **Optimization**: Mathematical algorithms analyze patterns for optimal placement  
-3. **Output**: Industry-standard `AGENTS.md` files compatible with all major coding agents
+**APM's Innovation**: Mathematical algorithms that automatically figure out the best places to put your context (standards, rules, guidelines, policies) so AI agents get exactly what they need, when they need it, without information overload.
 
-### Smart Compilation in Action
+### How It Works (No Math Degree Required!)
+
+Think of it like organizing a company handbook. You could put everything in one giant manual that everyone carries around, or you could smartly distribute relevant sections to different departments.
+
+APM does this automatically for your project context:
 
 ```bash
-# See the compilation workflow
-apm compile --dry-run
-
-# View detailed optimization analysis  
+# See what APM is planning to do
 apm compile --verbose --dry-run
 ```
 
-**Source → Compilation → Universal Output:**
-```yaml
-# Source: .apm/instructions/api-development.instructions.md
----
-applyTo: "backend/**/*.py"
----
-# Backend API development standards using FastAPI...
+**Real example from this project** - APM found 9 different context files (standards, compliance rules, guidelines) and had to decide where to put each one:
+
 ```
-↓ (APM optimization algorithms) ↓
-```markdown
-# Output: backend/api/AGENTS.md (industry standard)
-## Files matching `backend/**/*.py`
-<!-- Source: local .apm/instructions/api-development.instructions.md -->
-# Backend API development standards using FastAPI...
+🎯 Smart Distribution Results:
+• Design standards → Root level (affects 6 different folder types)
+• GDPR compliance → Root level (affects 10 different folder types) 
+• API development → backend/api/ only (affects 1 specific folder)
+• Testing strategy → tests/ only (affects 3 test-related folders)
+• React components → Root level (affects 3 component folders)
 ```
 
-**Real optimization from this project:**
-```
-Mathematical Optimization Analysis
-Pattern                   Distribution   Strategy        Coverage Guarantee   
-backend/**/*.py           0.056          Single Point    ✅ Perfect           
-**/*.{py,js,ts,tsx...}    0.678          Selective       ✅ Verified          
-**/*.{scss,css,sass}      0.299          Single Point    ✅ Perfect
+### The Mathematical Magic (Simplified)
 
-Performance Metrics:
-• Context Efficiency: 49.6% 
-• Universal Output: ✅ Standard AGENTS.md format for all agents
-```
+**The Core Problem**: Every instruction needs to be accessible to files that need it, but agents shouldn't be overwhelmed with irrelevant instructions.
+
+**APM's Solution**: Uses "distribution scores" to decide placement:
+- **0-30% distribution** → Place locally (like `backend/**/*.py` → goes in `backend/api/AGENTS.md`)
+- **30-70% distribution** → Smart multi-placement (verify coverage, fallback to root if needed)
+- **70%+ distribution** → Place at root (like `**/*.{py,js,ts,tsx}` → goes in root `AGENTS.md`)
+
+**Why This Matters**: 
+- ✅ **Coverage Guarantee**: Every file can access the instructions it needs
+- ⚡ **Efficiency**: Agents see mostly relevant context (49.6% efficiency in this project)
+- 🧠 **Cognitive Load**: No more overwhelming agents with irrelevant standards
+
+### Real Results: 5 Smart AGENTS.md Files
+
+Instead of one massive file, APM created 5 targeted context files:
+
+1. **Root `/AGENTS.md`** - Design standards, compliance rules, React patterns (broad patterns)
+2. **`backend/api/AGENTS.md`** - FastAPI security, database patterns (backend-specific)  
+3. **`tests/AGENTS.md`** - Testing strategy, pytest patterns (testing-specific)
+4. **`docs/AGENTS.md`** - Documentation standards (docs-specific)
+5. **`scripts/deployment/AGENTS.md`** - DevOps patterns (deployment-specific)
+
+**The Result**: When an AI agent works on `backend/api/auth.py`, it automatically inherits:
+- Root standards (design + compliance) ← Always relevant
+- Backend-specific API patterns ← Highly relevant
+- No testing or documentation noise ← Clean context
 
 ### Universal Agent Compatibility
 
-✅ Via [AGENTS.md standard](https://agents.md)
+✅ Works with **any** coding agent that supports [AGENTS.md](https://agents.md): GitHub Copilot, Cursor, Claude, Codex, etc.
 
-**Architectural Advantage**: APM provides the missing layer between modular context governance (`.instructions.md` source) and universal agent compatibility (`AGENTS.md` output), with mathematical optimization ensuring minimal cognitive load for coding agents.
+**Architectural Advantage**: APM bridges the gap between maintainable governance (modular `.instructions.md` source files) and universal compatibility (standard `AGENTS.md` output), with smart optimization ensuring agents get exactly the context they need.
 
 ---
 
