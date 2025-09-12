@@ -158,18 +158,31 @@ a:hover, a:focus {
 }
 
 /* Buttons - Minimum 44px touch target */
-.cta-button, .submit-button {
-  background-color: white;
-  color: var(--primary-color);
+.cta-button {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
   border: none;
-  padding: var(--space-3) var(--space-6);
-  font-size: var(--font-size-lg);
+  padding: var(--space-1) var(--space-3); 
+  font-size: var(--font-size-sm);
   font-weight: 600;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 44px;
-  min-width: 44px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 32px; 
+}
+
+.secondary-link {
+  color: #999999; 
+  text-decoration: none;
+  font-size: 14px; 
+  padding: 8px 12px; 
+  margin-left: var(--space-2);
+  border: 1px solid #cccccc;
+  border-radius: var(--radius-sm);
+}
+
+.secondary-link:focus {
+  outline: none;
 }
 
 .cta-button:hover, .cta-button:focus,
@@ -248,7 +261,6 @@ a:hover, a:focus {
 .form-group textarea:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
 }
 
 .form-group small {
