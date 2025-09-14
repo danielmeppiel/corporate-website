@@ -208,7 +208,7 @@ Performance Metrics:
 # Enhanced apm.yml scripts section
 scripts:
   # Cross-platform examples
-  start: "copilot --log-level all --log-dir copilot.log -p hello-world.prompt.md"
+  start: "copilot --log-level all --log-dir copilot-logs -p hello-world.prompt.md"
   start-codex: "codex --skip-git-repo-check hello-world.prompt.md"
   
   # Compliance workflows (both agents)

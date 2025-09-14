@@ -64,7 +64,7 @@ dependencies:
     - io.github.github/github-mcp-server
 
 scripts:
-  start: "copilot --log-level all --log-dir copilot.log -p hello-world.prompt.md"
+  start: "copilot --log-level all --log-dir copilot-logs -p hello-world.prompt.md"
   
   # Compliance workflows (automatically discovered from dependencies)
   audit: "copilot --log-level all -p compliance-audit.prompt.md"

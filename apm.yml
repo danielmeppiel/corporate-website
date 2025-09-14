@@ -12,14 +12,14 @@ dependencies:
 
 scripts:
   # Cross-platform enterprise workflows
-  start: "copilot --log-level all --log-dir copilot.log -p hello-world.prompt.md"
+  start: "copilot --log-level all --log-dir copilot-logs -p hello-world.prompt.md"
   
   # Compliance workflows (from compliance-rules dependency)
-  audit: "copilot --log-level all --log-dir copilot.log -p compliance-audit.prompt.md"
+  audit: "copilot --log-level all --log-dir copilot-logs -p compliance-audit.prompt.md"
   gdpr-check: "codex --skip-git-repo-check gdpr-assessment.prompt.md"
-  legal-review: "copilot --log-level all --log-dir copilot.log -p legal-review.prompt.md"
+  legal-review: "copilot --log-level all --log-dir copilot-logs -p legal-review.prompt.md"
   
   # Design workflows (from design-guidelines dependency)  
-  design-review: "copilot --log-level all --log-dir copilot.log -p design-review.prompt.md"
-  accessibility: "copilot --log-level all --log-dir copilot.log -p accessibility-audit.prompt.md"
+  design-review: "copilot --log-level all --log-dir copilot-logs -p design-review.prompt.md"
+  accessibility: "copilot --log-level all --log-dir copilot-logs -p accessibility-audit.prompt.md"
   style-check: "codex --skip-git-repo-check style-guide-check.prompt.md"
