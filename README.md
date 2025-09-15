@@ -20,28 +20,21 @@
 ## Quick Start (2 minutes)
 
 > [!NOTE] 
-> **📋 Prerequisites**: Get tokens at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)  
-> - **Fine-grained token** with Models + Copilot CLI permissions (preferred)  
-> - **Classic PAT** with `read:packages` for npm registry (required separately)
+> **📋 APM Setup Required**: First install APM CLI from [github/apm-cli](https://github.com/github/apm-cli) - follow their setup guide for tokens and runtime configuration.
 
 ```bash
 # 1. Clone and enter the project
 git clone https://github.com/github/corporate-website
 cd corporate-website
 
-# 2. Set up tokens and runtime (if not already done)
-export GITHUB_CLI_PAT=your_fine_grained_token_here
-export GITHUB_NPM_PAT=your_classic_pat_here
-apm runtime setup copilot
-
-# 3. Install APM dependencies (compliance + design packages)
+# 2. Install APM dependencies (compliance + design packages)
 apm install
 
-# 4. Generate AGENTS.md with enterprise context
+# 3. Generate AGENTS.md with enterprise context
 apm compile
 
-# 5. Run your first enterprise workflow
-apm run start --param name="Developer"
+# 4. Run your first enterprise workflow
+apm run start --param name="<YourGitHubHandle>"
 ```
 
 **That's it!** Your project now has enterprise-grade AI workflows with automatic compliance and design enforcement.
