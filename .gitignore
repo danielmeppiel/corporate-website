@@ -18,3 +18,4 @@ copilot.log
 # Build artifacts  
 *.tsbuildinfo
 AGENTS.md
+.apm/compiled
