@@ -34,7 +34,8 @@ apm install
 apm compile
 
 # 4. Run your first enterprise workflow
-apm run start --param name="<YourGitHubHandle>"
+# This will trigger hello-world.prompt.md as defined in apm.yml
+apm run start
 ```
 
 **That's it!** Your project now has enterprise-grade AI workflows with automatic compliance and design enforcement.

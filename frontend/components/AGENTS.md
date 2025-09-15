@@ -1,1 +1,0 @@
-# Old AGENTS.md

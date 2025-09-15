@@ -17,3 +17,4 @@ copilot.log
 
 # Build artifacts  
 *.tsbuildinfo
+AGENTS.md
