@@ -5,9 +5,9 @@ author: Corporate Team
 
 dependencies:
   apm:
-    - github/compliance-rules
+    - danielmeppiel/compliance-rules
   mcp:
-    - io.github.github/github-mcp-server
+    - microsoft/playwright-mcp
 
 scripts:
   # Cross-platform enterprise workflows
