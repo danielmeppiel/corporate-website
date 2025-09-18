@@ -58,16 +58,16 @@ dependencies:
     - io.github.github/github-mcp-server
 
 scripts:
-  start: "copilot --log-level all --log-dir copilot-logs -p hello-world.prompt.md"
+  start: "codex --skip-git-repo-check hello-world.prompt.md"
   
   # Compliance workflows (automatically discovered from dependencies)
-  audit: "copilot --log-level all -p compliance-audit.prompt.md"
+  audit: "codex --skip-git-repo-check compliance-audit.prompt.md"
   gdpr-check: "codex gdpr-assessment.prompt.md"
-  legal-review: "copilot --log-level all -p legal-review.prompt.md"
+  legal-review: "codex --skip-git-repo-check legal-review.prompt.md"
   
   # Design workflows (automatically discovered from dependencies)
-  accessibility: "copilot --log-level all -p accessibility-audit.prompt.md"
-  design-review: "copilot --log-level all -p design-review.prompt.md"
+  accessibility: "codex --skip-git-repo-check accessibility-audit.prompt.md"
+  design-review: "codex --skip-git-repo-check design-review.prompt.md"
   style-check: "codex style-guide-check.prompt.md"
 ```
 
@@ -173,7 +173,7 @@ Replace inconsistent compliance with engineered enterprise standards:
 
 - **Frontend**: Vanilla HTML, CSS, JavaScript with Vite build system
 - **APM Dependencies**: Enterprise compliance + design packages
-- **AI Compatibility**: Works with GitHub Copilot, Codex, and other [Agents.md](https://github.com/joggrdocs/agents.md) compatible tools
+- **AI Compatibility**: Works with GitHub Copilot, Claude Code, Codex, and other [Agents.md](https://github.com/joggrdocs/agents.md) compatible tools
 
 ## What APM Dependencies Provide
 
