@@ -6,6 +6,7 @@ author: Corporate Team
 dependencies:
   apm:
     - danielmeppiel/compliance-rules
+    - danielmeppiel/design-guidelines
   mcp:
     - microsoft/playwright-mcp
 
