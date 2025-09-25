@@ -55,7 +55,7 @@ param customDomainName string = ''
 
 // Custom domain configuration (only if domain name is provided)
 resource customDomain 'Microsoft.Web/staticSites/customDomains@2023-01-01' = if (sku == 'Standard' && !empty(customDomainName)) {
-  name: replace(customDomainName, '.', '-')
+  name: customDomainName
   parent: staticWebApp
   properties: {
     domainName: customDomainName
