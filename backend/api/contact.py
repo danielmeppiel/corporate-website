@@ -5,8 +5,10 @@ Integrates with the existing contact_handler for GDPR compliance
 
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, validator
 from typing import Optional
+import re
+import html
 import sys
 import os
 
@@ -46,6 +48,38 @@ class ContactFormData(BaseModel):
 
     class Config:
         allow_population_by_field_name = True
+
+    @validator('message')
+    def sanitize_message(cls, v):
+        """Sanitize message content server-side"""
+        if not v:
+            return v
+            
+        # Remove dangerous patterns
+        sanitized = v
+        dangerous_patterns = [
+            r'<script[^>]*>.*?</script>',  # Script tags
+            r'javascript:',                # Javascript protocol
+            r'vbscript:',                 # VBScript protocol
+            r'data:',                     # Data protocol
+            r'on\w+\s*=',                 # Event handlers
+            r'<[^>]*>',                   # HTML tags
+        ]
+        
+        for pattern in dangerous_patterns:
+            sanitized = re.sub(pattern, '', sanitized, flags=re.IGNORECASE | re.DOTALL)
+        
+        # HTML escape any remaining content
+        sanitized = html.escape(sanitized)
+        
+        return sanitized.strip()
+
+    @validator('csrf_token')
+    def validate_csrf_token_format(cls, v):
+        """Validate CSRF token format"""
+        if not v or not re.match(r'^[a-zA-Z0-9]{16,64}$', v):
+            raise ValueError('Invalid CSRF token format')
+        return v
 
 class ContactResponse(BaseModel):
     success: bool

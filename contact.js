@@ -80,11 +80,17 @@ function validateAndSanitizeInput(input) {
     const value = input.value;
     const inputType = input.type || input.tagName.toLowerCase();
     
-    // Remove any HTML tags (XSS prevention)
-    const sanitized = value.replace(/<[^>]*>/g, '');
-    if (sanitized !== value) {
-        input.value = sanitized;
-        showWarning('HTML tags are not allowed in form fields.');
+    // Comprehensive input sanitization using character filtering approach
+    const allowedCharacters = /^[a-zA-Z0-9\s@._\-+=!?,:;'"()\[\]{}\n\r]*$/;
+    
+    if (!allowedCharacters.test(value)) {
+        // Filter out dangerous characters completely
+        const sanitized = value.replace(/[<>&"']/g, '');
+        
+        if (sanitized !== value) {
+            input.value = sanitized;
+            showWarning('Invalid characters removed from form field.');
+        }
     }
     
     // Check for suspicious patterns

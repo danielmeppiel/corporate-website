@@ -51,14 +51,31 @@ async def serve_contact():
 
 @app.get("/{file_path:path}")
 async def serve_static_file(file_path: str):
-    """Serve static files (CSS, JS, images, etc.)"""
-    file_location = os.path.join(static_dir, file_path)
+    """Serve static files with security restrictions"""
+    # Whitelist of allowed files mapped to safe paths
+    allowed_files = {
+        'style.css': 'style.css',
+        'main.js': 'main.js', 
+        'contact.js': 'contact.js',
+        'index.html': 'index.html',
+        'contact.html': 'contact.html'
+    }
     
-    if os.path.exists(file_location) and os.path.isfile(file_location):
-        return FileResponse(file_location)
+    # Extract just the filename, ignore any path components
+    filename = os.path.basename(file_path)
     
-    # If file not found, serve 404 or redirect to index
-    return FileResponse(os.path.join(static_dir, "index.html"))
+    # Only serve explicitly allowed files using pre-defined safe paths
+    if filename in allowed_files:
+        safe_filename = allowed_files[filename]  # Get safe filename from whitelist
+        safe_file_path = f"{static_dir}/{safe_filename}"  # Use string formatting instead of os.path.join
+        
+        # Verify file exists
+        if os.path.exists(safe_file_path) and os.path.isfile(safe_file_path):
+            return FileResponse(safe_file_path)
+    
+    # Default to index if file not found or not allowed
+    index_path = f"{static_dir}/index.html"
+    return FileResponse(index_path)
 
 @app.get("/api/health")
 async def health_check():
