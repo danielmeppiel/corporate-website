@@ -12,14 +12,14 @@ dependencies:
 
 scripts:
   # Cross-platform enterprise workflows
-  start: "codex --skip-git-repo-check hello-world.prompt.md"
+  start: "codex -s workspace-write --skip-git-repo-check hello-world.prompt.md"
   
   # Compliance workflows (from compliance-rules dependency)
-  audit: "codex --skip-git-repo-check compliance-audit.prompt.md"
-  gdpr-check: "codex --skip-git-repo-check gdpr-assessment.prompt.md"
-  legal-review: "codex --skip-git-repo-check legal-review.prompt.md"
+  audit: "copilot --log-level all --log-dir copilot-logs --allow-all -p compliance-audit.prompt.md"
+  gdpr-check: "codex --sandbox workspace-write --skip-git-repo-check gdpr-assessment.prompt.md"
+  legal-review: "codex -s workspace-write --skip-git-repo-check legal-review.prompt.md"
   
   # Design workflows (from design-guidelines dependency)  
-  design-review: "codex --skip-git-repo-check design-review.prompt.md"
-  accessibility: "codex --skip-git-repo-check accessibility-audit.prompt.md"
-  style-check: "codex --skip-git-repo-check style-guide-check.prompt.md"
+  design-review: "codex -s workspace-write --skip-git-repo-check design-review.prompt.md"
+  accessibility: "codex -s workspace-write --skip-git-repo-check accessibility-audit.prompt.md"
+  style-check: "codex -s workspace-write --skip-git-repo-check style-guide-check.prompt.md"
