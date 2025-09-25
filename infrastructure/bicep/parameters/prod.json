@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "staticWebApp": {
+    "sku": "Standard"
+  },
+  "functionApp": {
+    "sku": "Y1"
+  },
+  "cosmosDb": {
+    "throughput": 400,
+    "consistencyLevel": "Session",
+    "enableServerless": true
+  },
+  "storage": {
+    "sku": "Standard_LRS",
+    "accessTier": "Hot"
+  },
+  "keyVault": {
+    "sku": "standard",
+    "softDeleteRetentionInDays": 90
+  },
+  "logAnalytics": {
+    "sku": "pergb2018",
+    "retentionInDays": 90
+  },
+  "cdn": {
+    "sku": "Standard_Microsoft"
+  },
+  "estimatedMonthlyCost": {
+    "staticWebApp": 10,
+    "functionApp": 25,
+    "cosmosDb": 30,
+    "storage": 10,
+    "keyVault": 3,
+    "monitoring": 15,
+    "cdn": 10,
+    "total": 103,
+    "currency": "USD"
+  }
+}
