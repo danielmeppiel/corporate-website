@@ -32,7 +32,7 @@ runs:
       run: |
         echo "Installing Python testing dependencies..." | tee -a coverage-steps.log
         python -m pip install --upgrade pip | tee -a coverage-steps.log
-        pip install pytest pytest-cov coverage | tee -a coverage-steps.log
+        pip install pytest pytest-cov coverage fastapi | tee -a coverage-steps.log
         echo "Python testing dependencies installed successfully" | tee -a coverage-steps.log
       shell: bash
 
@@ -40,7 +40,7 @@ runs:
     - name: Install JavaScript/TypeScript testing dependencies
       run: |
         echo "Installing JavaScript/TypeScript testing dependencies..." | tee -a coverage-steps.log
-        npm install --save-dev vitest @vitest/ui c8 @testing-library/react @testing-library/jest-dom jsdom happy-dom | tee -a coverage-steps.log
+        npm install --save-dev vitest @vitest/ui @vitest/coverage-v8 c8 @testing-library/react @testing-library/jest-dom jsdom happy-dom sass-embedded react react-dom | tee -a coverage-steps.log
         echo "JavaScript/TypeScript testing dependencies installed successfully" | tee -a coverage-steps.log
       shell: bash
 
@@ -57,7 +57,7 @@ runs:
             environment: 'jsdom',
             setupFiles: ['./tests/setup.js'],
             coverage: {
-              provider: 'c8',
+              provider: 'v8',
               reporter: ['text', 'json', 'html', 'lcov'],
               reportsDirectory: './coverage/js',
               include: ['src/**/*.{js,ts,jsx,tsx}', 'main.js'],
@@ -76,6 +76,11 @@ runs:
         mkdir -p tests
         cat > tests/setup.js << 'EOF'
         import '@testing-library/jest-dom'
+        import React from 'react'
+        import { vi } from 'vitest'
+
+        // Make React globally available
+        global.React = React
 
         // Mock window.matchMedia
         Object.defineProperty(window, 'matchMedia', {
