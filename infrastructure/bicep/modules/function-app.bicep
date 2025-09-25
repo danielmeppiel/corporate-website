@@ -8,6 +8,7 @@ param runtime string = 'python'
 param runtimeVersion string = '3.11'
 param sku string = 'Y1'
 param appSettings array = []
+param logAnalyticsWorkspaceId string = ''
 param tags object = {}
 
 // Get reference to existing storage account
@@ -142,7 +143,7 @@ resource keyVaultAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-
 }
 
 // Enable diagnostic logs for monitoring and compliance
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: 'audit-logs'
   scope: functionApp
   properties: {
@@ -166,7 +167,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         }
       }
     ]
-    workspaceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.OperationalInsights/workspaces/law-corporate-website-${uniqueString(resourceGroup().id)}'
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

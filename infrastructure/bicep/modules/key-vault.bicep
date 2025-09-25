@@ -4,6 +4,7 @@ param location string = resourceGroup().location
 param sku string = 'standard'
 param enablePurgeProtection bool = false
 param softDeleteRetentionInDays int = 7
+param logAnalyticsWorkspaceId string = ''
 param tags object = {}
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
@@ -111,7 +112,7 @@ resource csrfSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
 }
 
 // Enable diagnostic logging for security monitoring
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: 'keyvault-audit-logs'
   scope: keyVault
   properties: {
@@ -143,7 +144,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         }
       }
     ]
-    workspaceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.OperationalInsights/workspaces/law-corporate-website-${uniqueString(resourceGroup().id)}'
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

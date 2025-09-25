@@ -1,41 +1,42 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "staticWebApp": {
-    "sku": "Free"
-  },
-  "functionApp": {
-    "sku": "Y1"
-  },
-  "cosmosDb": {
-    "throughput": 400,
-    "consistencyLevel": "Session",
-    "enableServerless": true
-  },
-  "storage": {
-    "sku": "Standard_LRS",
-    "accessTier": "Hot"
-  },
-  "keyVault": {
-    "sku": "standard",
-    "softDeleteRetentionInDays": 7
-  },
-  "logAnalytics": {
-    "sku": "pergb2018",
-    "retentionInDays": 30
-  },
-  "cdn": {
-    "sku": "Standard_Microsoft"
-  },
-  "estimatedMonthlyCost": {
-    "staticWebApp": 0,
-    "functionApp": 10,
-    "cosmosDb": 10,
-    "storage": 5,
-    "keyVault": 3,
-    "monitoring": 2,
-    "cdn": 0,
-    "total": 30,
-    "currency": "USD"
+  "parameters": {
+    "staticWebAppSku": {
+      "value": "Free"
+    },
+    "functionAppSku": {
+      "value": "Y1"
+    },
+    "cosmosDbThroughput": {
+      "value": 400
+    },
+    "cosmosDbConsistencyLevel": {
+      "value": "Session"
+    },
+    "cosmosDbEnableServerless": {
+      "value": true
+    },
+    "storageSku": {
+      "value": "Standard_LRS"
+    },
+    "storageAccessTier": {
+      "value": "Hot"
+    },
+    "keyVaultSku": {
+      "value": "standard"
+    },
+    "keyVaultSoftDeleteRetentionInDays": {
+      "value": 7
+    },
+    "logAnalyticsSku": {
+      "value": "pergb2018"
+    },
+    "logAnalyticsRetentionInDays": {
+      "value": 30
+    },
+    "cdnSku": {
+      "value": "Standard_Microsoft"
+    }
   }
 }

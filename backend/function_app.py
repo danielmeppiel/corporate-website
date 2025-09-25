@@ -1,7 +1,6 @@
 import azure.functions as func
 import json
 import logging
-from api.users import router as users_router
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

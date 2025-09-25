@@ -5,6 +5,7 @@ param sku string = 'Standard_LRS'
 param accessTier string = 'Hot'
 param enableHttpsTrafficOnly bool = true
 param enableBlobPublicAccess bool = false
+param logAnalyticsWorkspaceId string = ''
 param tags object = {}
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
@@ -196,7 +197,7 @@ resource lifecyclePolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2
 }
 
 // Enable diagnostic logging for security monitoring
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: 'storage-audit-logs'
   scope: storageAccount
   properties: {
@@ -244,7 +245,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         }
       }
     ]
-    workspaceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.OperationalInsights/workspaces/law-corporate-website-${uniqueString(resourceGroup().id)}'
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

@@ -5,6 +5,7 @@ param databaseName string
 param containers array = []
 param consistencyLevel string = 'Session'
 param enableServerless bool = true
+param logAnalyticsWorkspaceId string = ''
 param tags object = {}
 
 // Cosmos DB Account with security and compliance features
@@ -131,7 +132,7 @@ resource cosmosContainers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/co
 }]
 
 // Enable diagnostic logging for audit trails (GDPR requirement)
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: 'audit-logs'
   scope: cosmosAccount
   properties: {
@@ -179,7 +180,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         }
       }
     ]
-    workspaceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.OperationalInsights/workspaces/law-corporate-website-${uniqueString(resourceGroup().id)}'
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

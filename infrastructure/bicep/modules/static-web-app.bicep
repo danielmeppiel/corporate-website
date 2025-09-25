@@ -49,12 +49,16 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2023-01-01' = if
   }
 }
 
-// Custom domain configuration (production only)
-resource customDomain 'Microsoft.Web/staticSites/customDomains@2023-01-01' = if (sku == 'Standard') {
-  name: 'www.corporate-website.com'
+// Custom domain configuration (optional parameter)
+@description('Custom domain name (optional)')
+param customDomainName string = ''
+
+// Custom domain configuration (only if domain name is provided)
+resource customDomain 'Microsoft.Web/staticSites/customDomains@2023-01-01' = if (sku == 'Standard' && !empty(customDomainName)) {
+  name: replace(customDomainName, '.', '-')
   parent: staticWebApp
   properties: {
-    domainName: 'www.corporate-website.com'
+    domainName: customDomainName
     validationMethod: 'cname-delegation'
   }
 }

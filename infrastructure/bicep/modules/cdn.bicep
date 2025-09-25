@@ -4,6 +4,7 @@ param location string = 'Global'
 param sku string = 'Standard_Microsoft'
 param endpointName string
 param originHostName string
+param logAnalyticsWorkspaceId string = ''
 param tags object = {}
 
 resource cdnProfile 'Microsoft.Cdn/profiles@2023-05-01' = {
@@ -264,7 +265,7 @@ resource cdnEndpoint 'Microsoft.Cdn/profiles/endpoints@2023-05-01' = {
 }
 
 // Enable diagnostic logging for monitoring
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: 'cdn-audit-logs'
   scope: cdnEndpoint
   properties: {
@@ -278,7 +279,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         }
       }
     ]
-    workspaceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.OperationalInsights/workspaces/law-corporate-website-${uniqueString(resourceGroup().id)}'
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

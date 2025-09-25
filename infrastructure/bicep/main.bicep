@@ -18,8 +18,19 @@ var commonTags = {
   Owner: 'Corporate-Team'
 }
 
-// Load environment-specific parameters
-var environmentConfig = loadJsonContent('parameters/${environment}.json')
+// Environment-specific parameters
+param staticWebAppSku string = 'Free'
+param functionAppSku string = 'Y1'
+param cosmosDbThroughput int = 400
+param cosmosDbConsistencyLevel string = 'Session'
+param cosmosDbEnableServerless bool = true
+param storageSku string = 'Standard_LRS'
+param storageAccessTier string = 'Hot'
+param keyVaultSku string = 'standard'
+param keyVaultSoftDeleteRetentionInDays int = 7
+param logAnalyticsSku string = 'pergb2018'
+param logAnalyticsRetentionInDays int = 30
+param cdnSku string = 'Standard_Microsoft'
 
 // Deploy Log Analytics Workspace first (required by other services)
 module logAnalytics 'modules/monitoring.bicep' = {
@@ -27,8 +38,8 @@ module logAnalytics 'modules/monitoring.bicep' = {
   params: {
     workspaceName: 'law-${resourceSuffix}-${uniqueSuffix}'
     location: location
-    sku: environmentConfig.logAnalytics.sku
-    retentionInDays: environmentConfig.logAnalytics.retentionInDays
+    sku: logAnalyticsSku
+    retentionInDays: logAnalyticsRetentionInDays
     tags: commonTags
   }
 }
@@ -51,12 +62,16 @@ module storage 'modules/storage.bicep' = {
   params: {
     storageAccountName: 'st${replace(resourceSuffix, '-', '')}${uniqueSuffix}'
     location: location
-    sku: environmentConfig.storage.sku
-    accessTier: environmentConfig.storage.accessTier
+    sku: storageSku
+    accessTier: storageAccessTier
     enableHttpsTrafficOnly: true
     enableBlobPublicAccess: false
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     tags: commonTags
   }
+  dependsOn: [
+    logAnalytics
+  ]
 }
 
 // Deploy Key Vault for secrets management
@@ -65,11 +80,15 @@ module keyVault 'modules/key-vault.bicep' = {
   params: {
     keyVaultName: 'kv-${resourceSuffix}-${uniqueSuffix}'
     location: location
-    sku: environmentConfig.keyVault.sku
+    sku: keyVaultSku
     enablePurgeProtection: environment == 'prod'
-    softDeleteRetentionInDays: environmentConfig.keyVault.softDeleteRetentionInDays
+    softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     tags: commonTags
   }
+  dependsOn: [
+    logAnalytics
+  ]
 }
 
 // Deploy Cosmos DB for user data and audit logs
@@ -83,12 +102,12 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
       {
         name: 'users'
         partitionKey: '/id'
-        throughput: environmentConfig.cosmosDb.throughput
+        throughput: cosmosDbThroughput
       }
       {
         name: 'audit-logs'
         partitionKey: '/userId'
-        throughput: environmentConfig.cosmosDb.throughput
+        throughput: cosmosDbThroughput
         ttl: 2557440 // 7 years in seconds for GDPR compliance
       }
       {
@@ -98,10 +117,14 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
         ttl: 157680000 // 5 years in seconds for GDPR compliance
       }
     ]
-    consistencyLevel: environmentConfig.cosmosDb.consistencyLevel
-    enableServerless: environmentConfig.cosmosDb.enableServerless
+    consistencyLevel: cosmosDbConsistencyLevel
+    enableServerless: cosmosDbEnableServerless
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     tags: commonTags
   }
+  dependsOn: [
+    logAnalytics
+  ]
 }
 
 // Deploy Azure Functions for backend API
@@ -115,7 +138,8 @@ module functionApp 'modules/function-app.bicep' = {
     keyVaultName: keyVault.outputs.name
     runtime: 'python'
     runtimeVersion: '3.11'
-    sku: environmentConfig.functionApp.sku
+    sku: functionAppSku
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     tags: commonTags
     appSettings: [
       {
@@ -145,6 +169,7 @@ module functionApp 'modules/function-app.bicep' = {
     appInsights
     keyVault
     cosmosDb
+    logAnalytics
   ]
 }
 
@@ -154,7 +179,7 @@ module staticWebApp 'modules/static-web-app.bicep' = {
   params: {
     staticWebAppName: 'swa-${resourceSuffix}-${uniqueSuffix}'
     location: environment == 'prod' ? 'East US 2' : 'Central US' // Static Web Apps have limited regions
-    sku: environmentConfig.staticWebApp.sku
+    sku: staticWebAppSku
     repositoryUrl: 'https://github.com/danielmeppiel/corporate-website'
     branch: environment == 'prod' ? 'main' : 'develop'
     buildProperties: {
@@ -190,13 +215,15 @@ module cdn 'modules/cdn.bicep' = if (environment == 'prod') {
   params: {
     cdnProfileName: 'cdn-${resourceSuffix}-${uniqueSuffix}'
     location: 'Global'
-    sku: environmentConfig.cdn.sku
+    sku: cdnSku
     endpointName: 'corporate-website-${uniqueSuffix}'
     originHostName: staticWebApp.outputs.defaultHostName
+    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
     tags: commonTags
   }
   dependsOn: [
     staticWebApp
+    logAnalytics
   ]
 }
 
@@ -247,7 +274,7 @@ output cdnEndpointUrl string = environment == 'prod' ? cdn.outputs.endpointUrl :
 // Cost tracking outputs
 output estimatedMonthlyCost object = {
   environment: environment
-  staticWebApp: environmentConfig.staticWebApp.sku == 'Free' ? 0 : 10
+  staticWebApp: staticWebAppSku == 'Free' ? 0 : 10
   functionApp: environment == 'prod' ? 25 : 10
   cosmosDb: environment == 'prod' ? 30 : 10
   storage: environment == 'prod' ? 10 : 5
