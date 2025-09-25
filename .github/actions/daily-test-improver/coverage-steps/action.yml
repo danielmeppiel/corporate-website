@@ -1,0 +1,197 @@
+name: 'Build and Generate Coverage Report'
+description: 'Build the project, run tests, and generate combined coverage reports for JavaScript/TypeScript and Python code'
+
+runs:
+  using: 'composite'
+  steps:
+    # Step 1: Setup Node.js environment
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+      shell: bash
+
+    # Step 2: Install Node.js dependencies
+    - name: Install Node.js dependencies
+      run: |
+        echo "Installing Node.js dependencies..." | tee -a coverage-steps.log
+        npm install | tee -a coverage-steps.log
+        echo "Node.js dependencies installed successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 3: Setup Python environment
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+      shell: bash
+
+    # Step 4: Install Python testing dependencies
+    - name: Install Python testing dependencies
+      run: |
+        echo "Installing Python testing dependencies..." | tee -a coverage-steps.log
+        python -m pip install --upgrade pip | tee -a coverage-steps.log
+        pip install pytest pytest-cov coverage | tee -a coverage-steps.log
+        echo "Python testing dependencies installed successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 5: Install additional testing dependencies for JavaScript/TypeScript
+    - name: Install JavaScript/TypeScript testing dependencies
+      run: |
+        echo "Installing JavaScript/TypeScript testing dependencies..." | tee -a coverage-steps.log
+        npm install --save-dev vitest @vitest/ui c8 @testing-library/react @testing-library/jest-dom jsdom happy-dom | tee -a coverage-steps.log
+        echo "JavaScript/TypeScript testing dependencies installed successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 6: Create Vitest configuration for testing
+    - name: Create Vitest configuration
+      run: |
+        echo "Creating Vitest configuration..." | tee -a coverage-steps.log
+        cat > vitest.config.js << 'EOF'
+        import { defineConfig } from 'vitest/config'
+
+        export default defineConfig({
+          test: {
+            globals: true,
+            environment: 'jsdom',
+            setupFiles: ['./tests/setup.js'],
+            coverage: {
+              provider: 'c8',
+              reporter: ['text', 'json', 'html', 'lcov'],
+              reportsDirectory: './coverage/js',
+              include: ['src/**/*.{js,ts,jsx,tsx}', 'main.js'],
+              exclude: ['node_modules/', 'dist/', 'tests/', '**/*.test.*', '**/*.spec.*']
+            }
+          }
+        })
+        EOF
+        echo "Vitest configuration created successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 7: Create test setup file
+    - name: Create test setup file
+      run: |
+        echo "Creating test setup file..." | tee -a coverage-steps.log
+        mkdir -p tests
+        cat > tests/setup.js << 'EOF'
+        import '@testing-library/jest-dom'
+
+        // Mock window.matchMedia
+        Object.defineProperty(window, 'matchMedia', {
+          writable: true,
+          value: vi.fn().mockImplementation(query => ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+          })),
+        })
+
+        // Mock localStorage
+        const localStorageMock = {
+          getItem: vi.fn(),
+          setItem: vi.fn(),
+          removeItem: vi.fn(),
+          clear: vi.fn(),
+        }
+        global.localStorage = localStorageMock
+        EOF
+        echo "Test setup file created successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 8: Build the project
+    - name: Build project
+      run: |
+        echo "Building project..." | tee -a coverage-steps.log
+        npm run build | tee -a coverage-steps.log
+        echo "Project built successfully" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 9: Run JavaScript/TypeScript tests with coverage
+    - name: Run JavaScript/TypeScript tests with coverage
+      run: |
+        echo "Running JavaScript/TypeScript tests with coverage..." | tee -a coverage-steps.log
+        npx vitest run --coverage | tee -a coverage-steps.log
+        echo "JavaScript/TypeScript tests completed" | tee -a coverage-steps.log
+      shell: bash
+      continue-on-error: true
+
+    # Step 10: Run Python tests with coverage
+    - name: Run Python tests with coverage
+      run: |
+        echo "Running Python tests with coverage..." | tee -a coverage-steps.log
+        python -m pytest tests/ --cov=server --cov=backend --cov-report=html:coverage/python --cov-report=json:coverage/python/coverage.json --cov-report=term | tee -a coverage-steps.log
+        echo "Python tests completed" | tee -a coverage-steps.log
+      shell: bash
+      continue-on-error: true
+
+    # Step 11: Create combined coverage directory
+    - name: Create combined coverage directory
+      run: |
+        echo "Creating combined coverage directory..." | tee -a coverage-steps.log
+        mkdir -p coverage/combined
+        echo "Coverage directory structure:" | tee -a coverage-steps.log
+        ls -la coverage/ | tee -a coverage-steps.log
+        if [ -d "coverage/js" ]; then
+          echo "JavaScript/TypeScript coverage files:" | tee -a coverage-steps.log
+          ls -la coverage/js/ | tee -a coverage-steps.log
+        fi
+        if [ -d "coverage/python" ]; then
+          echo "Python coverage files:" | tee -a coverage-steps.log
+          ls -la coverage/python/ | tee -a coverage-steps.log
+        fi
+      shell: bash
+
+    # Step 12: Generate combined coverage report
+    - name: Generate combined coverage report
+      run: |
+        echo "Generating combined coverage summary..." | tee -a coverage-steps.log
+        cat > coverage/combined/summary.md << 'EOF'
+        # Test Coverage Report
+
+        ## JavaScript/TypeScript Coverage
+        EOF
+
+        if [ -f "coverage/js/coverage-summary.json" ]; then
+          echo "JavaScript/TypeScript coverage data found" | tee -a coverage-steps.log
+          echo "" >> coverage/combined/summary.md
+          echo "```json" >> coverage/combined/summary.md
+          cat coverage/js/coverage-summary.json >> coverage/combined/summary.md
+          echo "```" >> coverage/combined/summary.md
+        else
+          echo "No JavaScript/TypeScript coverage data found" | tee -a coverage-steps.log
+          echo "No coverage data generated" >> coverage/combined/summary.md
+        fi
+
+        echo "" >> coverage/combined/summary.md
+        echo "## Python Coverage" >> coverage/combined/summary.md
+
+        if [ -f "coverage/python/coverage.json" ]; then
+          echo "Python coverage data found" | tee -a coverage-steps.log
+          echo "" >> coverage/combined/summary.md
+          echo "```json" >> coverage/combined/summary.md
+          cat coverage/python/coverage.json >> coverage/combined/summary.md
+          echo "```" >> coverage/combined/summary.md
+        else
+          echo "No Python coverage data found" | tee -a coverage-steps.log
+          echo "No coverage data generated" >> coverage/combined/summary.md
+        fi
+
+        echo "Combined coverage summary generated" | tee -a coverage-steps.log
+      shell: bash
+
+    # Step 13: Upload coverage reports as artifact
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage
+        path: |
+          coverage/
+          coverage-steps.log
+      if: always()
+      shell: bash
