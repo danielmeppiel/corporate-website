@@ -36,7 +36,7 @@ runs:
       run: |
         echo "=== Installing Python testing frameworks ===" | tee -a coverage-steps.log
         python -m pip install --upgrade pip | tee -a coverage-steps.log
-        pip install pytest pytest-cov coverage fastapi httpx | tee -a coverage-steps.log
+        pip install pytest pytest-cov coverage fastapi httpx requests | tee -a coverage-steps.log
 
         echo "=== Python setup complete ===" | tee -a coverage-steps.log
 
@@ -53,7 +53,7 @@ runs:
             environment: 'jsdom',
             setupFiles: ['./tests/setup.js'],
             coverage: {
-              provider: 'c8',
+              provider: 'v8',
               reporter: ['text', 'json', 'html'],
               reportsDirectory: './coverage/js',
               include: ['src/**/*.{ts,tsx,js,jsx}', 'main.js'],
@@ -67,19 +67,20 @@ runs:
         mkdir -p tests
         cat > tests/setup.js << 'EOF'
         import '@testing-library/jest-dom'
+        import { vi } from 'vitest'
 
         // Mock localStorage and sessionStorage for tests
         const localStorageMock = {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-          removeItem: jest.fn(),
-          clear: jest.fn(),
+          getItem: vi.fn(),
+          setItem: vi.fn(),
+          removeItem: vi.fn(),
+          clear: vi.fn(),
         };
         const sessionStorageMock = {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-          removeItem: jest.fn(),
-          clear: jest.fn(),
+          getItem: vi.fn(),
+          setItem: vi.fn(),
+          removeItem: vi.fn(),
+          clear: vi.fn(),
         };
         global.localStorage = localStorageMock;
         global.sessionStorage = sessionStorageMock;
@@ -123,6 +124,10 @@ runs:
       run: |
         echo "=== Running Python tests ===" | tee -a coverage-steps.log
 
+        # Set up PYTHONPATH to help with imports
+        export PYTHONPATH="${PYTHONPATH}:$(pwd):$(pwd)/src:$(pwd)/server:$(pwd)/backend"
+        echo "PYTHONPATH set to: $PYTHONPATH" | tee -a coverage-steps.log
+
         # Create pytest configuration if needed
         if [ ! -f pytest.ini ]; then
           cat > pytest.ini << 'EOF'
@@ -136,8 +141,8 @@ runs:
           echo "Created pytest.ini configuration" | tee -a coverage-steps.log
         fi
 
-        # Run Python tests with coverage
-        python -m pytest tests/ --cov=server --cov=backend --cov-report=html:coverage/python --cov-report=json:coverage/python/coverage.json 2>&1 | tee -a coverage-steps.log || {
+        # Run Python tests with coverage (continue even if some tests fail)
+        PYTHONPATH="$PYTHONPATH" python -m pytest tests/ --cov=server --cov=backend --cov-report=html:coverage/python --cov-report=json:coverage/python/coverage.json 2>&1 | tee -a coverage-steps.log || {
           echo "Python tests completed with some failures, continuing..." | tee -a coverage-steps.log
         }
 
