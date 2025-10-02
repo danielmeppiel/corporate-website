@@ -267,7 +267,7 @@ a:hover, a:focus {
   line-height: 1.6;
 }
 
-.press-release p {
+.press-release p:not(.press-summary) {
   color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: var(--space-3);
