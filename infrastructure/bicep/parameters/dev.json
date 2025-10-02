@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "dev"
+    },
+    "location": {
+      "value": "westeurope"
+    },
+    "baseName": {
+      "value": "corporate-website"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Development",
+        "Application": "Corporate Website",
+        "ManagedBy": "Bicep",
+        "CostCenter": "Development",
+        "Owner": "DevTeam"
+      }
+    }
+  }
+}

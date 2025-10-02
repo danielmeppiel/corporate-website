@@ -1,0 +1,32 @@
+# Azure Functions Python requirements
+# For Python 3.11 runtime
+
+# Azure Functions core
+azure-functions>=1.18.0
+
+# FastAPI for API endpoints
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Azure SDK
+azure-cosmos>=4.5.1
+azure-storage-blob>=12.19.0
+azure-identity>=1.15.0
+azure-keyvault-secrets>=4.7.0
+
+# Database and data handling
+pydantic>=2.5.0
+
+# Logging and monitoring
+azure-monitor-opentelemetry>=1.2.0
+
+# GDPR compliance dependencies
+python-dotenv>=1.0.0
+
+# Security
+cryptography>=41.0.0
+
+# Testing (development only)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.26.0

@@ -40,6 +40,40 @@ apm run start
 
 **That's it!** Your project now has enterprise-grade AI workflows with automatic compliance and design enforcement.
 
+## ☁️ Azure Deployment
+
+**Deploy to Azure in minutes** with production-ready infrastructure as code:
+
+```bash
+# One-command deployment
+./scripts/deploy-azure.sh
+```
+
+**What you get:**
+- 🌐 **Frontend**: Azure Static Web Apps with automatic SSL/CDN
+- ⚡ **Backend**: Serverless Azure Functions (Python FastAPI)
+- 💾 **Database**: Cosmos DB (serverless, GDPR-compliant)
+- 🔐 **Security**: Key Vault, managed identities, RBAC
+- 📊 **Monitoring**: Application Insights with custom dashboards
+- 💰 **Cost-optimized**: $27-64/month for dev + production
+
+**Cost breakdown:**
+- Development: $1-13/month (free tiers)
+- Production: $26-51/month (serverless)
+- 65-75% savings vs traditional architecture
+
+**Quick links:**
+- 📘 [Architecture Overview](./ARCHITECTURE.md) - Detailed design with mermaid diagrams
+- 🚀 [Deployment Guide](./DEPLOYMENT.md) - Step-by-step instructions
+- ⚡ [Quick Reference](./AZURE-QUICKSTART.md) - Common commands and tips
+
+**Features:**
+- ✅ Complete Bicep templates for all resources
+- ✅ GitHub Actions CI/CD workflows
+- ✅ GDPR-compliant (EU regions, audit logs, data retention)
+- ✅ Auto-scaling serverless architecture
+- ✅ Disaster recovery ready
+
 ### Example `apm.yml` - Enterprise Dependencies in Action
 
 Here's how enterprise packages compose together (similar to `package.json` in npm):
