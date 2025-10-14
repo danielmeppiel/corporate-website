@@ -19,3 +19,7 @@ copilot.log
 *.tsbuildinfo
 AGENTS.md
 .apm/compiled
+# Database files (don't commit actual databases, only schema)
+*.db
+*.db-wal
+*.db-shm
