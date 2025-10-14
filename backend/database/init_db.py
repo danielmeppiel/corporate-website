@@ -183,7 +183,7 @@ def verify_database(db_path: Path = None) -> bool:
         
         required_columns = {
             'id', 'event_type', 'timestamp', 'user_id', 'ip_hash',
-            'submission_id', 'event_data', 'created_at'
+            'user_agent', 'submission_id', 'event_data', 'created_at'
         }
         
         if not required_columns.issubset(columns):

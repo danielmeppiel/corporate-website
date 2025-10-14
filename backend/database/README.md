@@ -77,7 +77,7 @@ python3 backend/database/init_db.py --verify
 python3 backend/database/init_db.py --reset
 
 # Use custom database path
-python3 backend/database/init_db.py --path /path/to/custom.db
+python3 backend/database/init_db.py --path ./custom_location/contact.db
 
 # Quiet mode (suppress output)
 python3 backend/database/init_db.py --quiet
