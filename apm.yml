@@ -15,7 +15,7 @@ scripts:
   start: "codex -s workspace-write --skip-git-repo-check hello-world.prompt.md"
   
   # Compliance workflows (from compliance-rules dependency)
-  audit: "copilot --log-level all --log-dir copilot-logs --allow-all -p compliance-audit.prompt.md"
+  audit: "copilot --log-level all --log-dir copilot-logs --allow-all-tools -p compliance-audit.prompt.md"
   gdpr-check: "codex --sandbox workspace-write --skip-git-repo-check gdpr-assessment.prompt.md"
   legal-review: "codex -s workspace-write --skip-git-repo-check legal-review.prompt.md"
   
