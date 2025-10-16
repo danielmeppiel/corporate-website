@@ -164,8 +164,10 @@ export function validateEmail(email: string): boolean {
  * - Use HTTPS to prevent token interception
  * - Include token in custom header (X-CSRF-Token) or hidden form field
  * 
- * Production note: Replace Math.random() with crypto.getRandomValues()
- * for cryptographically secure random number generation.
+ * **IMPORTANT SECURITY NOTE**: The current implementation uses Math.random() which is NOT
+ * cryptographically secure. In production, replace Math.random() with crypto.getRandomValues()
+ * or use Web Crypto API to ensure unpredictable token generation. Predictable tokens can
+ * be exploited by attackers to bypass CSRF protection.
  * 
  * @param {number} [length=32] - Length of the generated token (default: 32 characters)
  * 
@@ -247,6 +249,9 @@ export function generateSecureToken(length: number = 32): string {
  * @example
  * ```typescript
  * // Hash IP address for audit logging
+ * // Note: logAuditEvent is imported from '../api/contact'
+ * import { logAuditEvent } from '../api/contact';
+ * 
  * const ipAddress = '192.168.1.1';
  * const hashedIP = await hashSensitiveData(ipAddress);
  * console.log(hashedIP); // "c71e7b3a24f8e256..."
@@ -260,10 +265,12 @@ export function generateSecureToken(length: number = 32): string {
  * @example
  * ```typescript
  * // Hash email for analytics without storing PII
+ * // Note: trackEvent is a placeholder for your analytics function
  * const userEmail = 'user@example.com';
  * const hashedEmail = await hashSensitiveData(userEmail);
  * 
- * await trackEvent('newsletter_signup', {
+ * // Use with your analytics service
+ * analyticsService.trackEvent('newsletter_signup', {
  *   user_hash: hashedEmail, // Can correlate events without storing email
  *   timestamp: Date.now()
  * });
