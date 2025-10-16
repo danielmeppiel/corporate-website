@@ -265,14 +265,19 @@ export function generateSecureToken(length: number = 32): string {
  * @example
  * ```typescript
  * // Hash email for analytics without storing PII
- * // Note: trackEvent is a placeholder for your analytics function
+ * // Note: Replace with your actual analytics implementation
  * const userEmail = 'user@example.com';
  * const hashedEmail = await hashSensitiveData(userEmail);
  * 
- * // Use with your analytics service
- * analyticsService.trackEvent('newsletter_signup', {
- *   user_hash: hashedEmail, // Can correlate events without storing email
- *   timestamp: Date.now()
+ * // Example: Use with a custom analytics service
+ * fetch('/api/analytics/track', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({
+ *     event: 'newsletter_signup',
+ *     user_hash: hashedEmail, // Can correlate events without storing email
+ *     timestamp: Date.now()
+ *   })
  * });
  * ```
  * 
