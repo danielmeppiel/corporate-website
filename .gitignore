@@ -19,3 +19,10 @@ copilot.log
 *.tsbuildinfo
 AGENTS.md
 .apm/compiled
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
