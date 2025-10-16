@@ -24,7 +24,10 @@ interface FormData {
  * @property {string} [submit] - Error message for form submission failures
  */
 interface FormErrors {
-  [key: string]: string;
+  name?: string;
+  email?: string;
+  message?: string;
+  submit?: string;
 }
 
 /**
@@ -70,13 +73,13 @@ interface FormErrors {
  * 
  * **Validation:**
  * - Client-side validation using `validateForm()` helper
- * - Email format validation with RFC 5322 compliance
+ * - Basic email format validation (standard email regex pattern)
  * - Required field validation
  * - Security: XSS prevention through proper escaping
  * 
  * @see {@link https://www.w3.org/WAI/WCAG21/quickref/|WCAG 2.1 Guidelines}
- * @see {@link ./ContactForm.scss|Design system styles from design-guidelines dependency}
- * @see {@link ../api/contact.ts|Backend API integration with compliance-rules}
+ * @see {@link https://github.com/danielmeppiel/corporate-website/blob/main/src/components/ContactForm.scss|Design system styles from design-guidelines dependency}
+ * @see {@link https://github.com/danielmeppiel/corporate-website/blob/main/src/api/contact.ts|Backend API integration with compliance-rules}
  * 
  * @returns {JSX.Element} Accessible contact form with validation and error handling
  */
@@ -177,7 +180,7 @@ export const ContactForm = () => {
    * @description
    * Performs comprehensive client-side validation:
    * - **Name field:** Required, must not be empty after trimming whitespace
-   * - **Email field:** Required, must match valid email format (RFC 5322 compliant)
+   * - **Email field:** Required, must match valid email format (standard email regex pattern)
    * - **Message field:** Required, must not be empty after trimming whitespace
    * 
    * **Security Considerations:**
