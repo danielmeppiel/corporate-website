@@ -181,10 +181,6 @@ a:hover, a:focus {
   border-radius: var(--radius-sm);
 }
 
-.secondary-link:focus {
-  outline: none;
-}
-
 .cta-button:hover, .cta-button:focus,
 .submit-button:hover, .submit-button:focus {
   background-color: var(--surface);
