@@ -1,4 +1,3 @@
-```instructions
 ---
 applyTo: "**/*.py"
 description: "Corporate website Python styling standards and server-side best practices"

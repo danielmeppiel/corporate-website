@@ -2,24 +2,16 @@ name: corporate-website
 version: 1.0.0
 description: Corporate website with compliance and design standards
 author: Corporate Team
-
 dependencies:
   apm:
-    - danielmeppiel/compliance-rules
-    - danielmeppiel/design-guidelines
-  mcp:
-    - microsoft/playwright-mcp
-
+  - danielmeppiel/form-builder        # Build forms with React Hook Form + Zod
+  - danielmeppiel/compliance-rules    # GDPR, security guardrails
+  - danielmeppiel/design-guidelines   # UI/UX standards
 scripts:
-  # Cross-platform enterprise workflows
-  start: "codex -s workspace-write --skip-git-repo-check hello-world.prompt.md"
-  
-  # Compliance workflows (from compliance-rules dependency)
-  audit: "copilot --log-level all --log-dir copilot-logs --allow-all -p compliance-audit.prompt.md"
-  gdpr-check: "codex --sandbox workspace-write --skip-git-repo-check gdpr-assessment.prompt.md"
-  legal-review: "codex -s workspace-write --skip-git-repo-check legal-review.prompt.md"
-  
-  # Design workflows (from design-guidelines dependency)  
-  design-review: "codex -s workspace-write --skip-git-repo-check design-review.prompt.md"
-  accessibility: "codex -s workspace-write --skip-git-repo-check accessibility-audit.prompt.md"
-  style-check: "codex -s workspace-write --skip-git-repo-check style-guide-check.prompt.md"
+  start: codex -s workspace-write --skip-git-repo-check hello-world.prompt.md
+  audit: copilot --log-level all --log-dir copilot-logs --allow-all -p compliance-audit.prompt.md
+  gdpr-check: codex --sandbox workspace-write --skip-git-repo-check gdpr-assessment.prompt.md
+  legal-review: codex -s workspace-write --skip-git-repo-check legal-review.prompt.md
+  design-review: codex -s workspace-write --skip-git-repo-check design-review.prompt.md
+  accessibility: codex -s workspace-write --skip-git-repo-check accessibility-audit.prompt.md
+  style-check: codex -s workspace-write --skip-git-repo-check style-guide-check.prompt.md

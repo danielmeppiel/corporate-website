@@ -1,21 +1,38 @@
 # Corporate Website - APM Enterprise Showcase
 
-> **🚀 This project demonstrates [APM CLI](https://github.com/github/apm-cli) capabilities** - A complete showcase of enterprise dependency composition, AI-native workflows, and automatic compliance enforcement.
+> **🚀 This project demonstrates [APM CLI](https://github.com/danielmeppiel/apm) capabilities** - Skills give agents powers, guardrails keep them compliant.
 
-**Enterprise-grade web development with automatic compliance and design enforcement** - Demonstrating APM dependency composition for consistent, compliant, and accessible development.
+**Enterprise-grade web development with AI capabilities + automatic compliance** - Watch `form-builder` skill create contact forms while `compliance-rules` ensures GDPR compliance.
 
 ## What APM Dependencies Provide
 
-📦 **Real enterprise packages working together**:
+📦 **Skills + Guardrails working together**:
 
-- **Compliance** - GDPR audit workflows, legal review processes, data protection (.prompt.md files)
-- **Design Standards** - Accessibility enforcement, WCAG 2.1 AA compliance, design system rules (.instructions.md files)
+- **[form-builder](https://github.com/danielmeppiel/form-builder)** - React Hook Form + Zod validation patterns (Skill: what agents CAN DO)
+- **[compliance-rules](https://github.com/danielmeppiel/compliance-rules)** - GDPR, security, audit requirements (Guardrail: what agents MUST FOLLOW)
+- **[design-guidelines](https://github.com/danielmeppiel/design-guidelines)** - Accessibility, UI/UX standards (Guardrail)
 
-## Real Enterprise Scenario
+## The Skill + Guardrails Tension
 
-🏢 **"Corporate Website"** - Project combining [`github/compliance-rules`](https://github.com/github/compliance-rules) + [`github/design-guidelines`](https://github.com/github/design-guidelines) for automatic compliance + design enforcement
+🎯 **The narrative**: `form-builder` gives your agent the *power* to build forms. `compliance-rules` ensures those forms are *GDPR compliant*.
 
-**Result**: Your AI agents automatically know your company's security standards, design guidelines, and compliance requirements **before** they start coding.
+```
+User: "Build a contact form"
+
+┌─ form-builder (Skill) ──────────────────────────┐
+│ ✓ React Hook Form for controlled inputs        │
+│ ✓ Zod schema for validation                    │
+│ ✓ Accessible form patterns                     │
+└─────────────────────────────────────────────────┘
+            ↓ constrained by ↓
+┌─ compliance-rules (Guardrail) ──────────────────┐
+│ ✓ GDPR consent checkbox required                │
+│ ✓ Data minimization (only collect what's needed)│
+│ ✓ Audit logging for form submissions           │
+└─────────────────────────────────────────────────┘
+```
+
+**Result**: AI builds a production-ready, compliant contact form.
 
 ## Quick Start (2 minutes)
 
@@ -40,22 +57,21 @@ apm run start
 
 **That's it!** Your project now has enterprise-grade AI workflows with automatic compliance and design enforcement.
 
-### Example `apm.yml` - Enterprise Dependencies in Action
+### Example `apm.yml` - Skills + Guardrails Composition
 
-Here's how enterprise packages compose together (similar to `package.json` in npm):
+Here's how skills and guardrails compose together:
 
 ```yaml
 name: corporate-website
 version: 1.0.0
-description: Corporate website with compliance and design standards
+description: Corporate website with form building and compliance
 author: Corporate Team
 
 dependencies:
   apm:
-    - github/compliance-rules    # GDPR, legal review, audit trails
-    - github/design-guidelines   # WCAG 2.1 AA, design system
-  mcp:
-    - io.github.github/github-mcp-server
+    - danielmeppiel/form-builder        # Skill: form building capability
+    - danielmeppiel/compliance-rules    # Guardrail: GDPR, security
+    - danielmeppiel/design-guidelines   # Guardrail: UI/UX standards
 
 scripts:
   start: "codex --skip-git-repo-check hello-world.prompt.md"
@@ -229,11 +245,12 @@ apm compile             # Generate context from dependencies
 
 ## Next Steps
 
-- 📖 [APM CLI Documentation](https://github.com/github/apm-cli) - Complete APM usage guide
+- 📖 [APM CLI Documentation](https://github.com/danielmeppiel/apm) - Complete APM usage guide
 - 🚀 [Getting Started with AI-Native Development](https://danielmeppiel.github.io/awesome-ai-native) - Learning path and framework
-- 🏢 [Enterprise Dependencies](https://github.com/github/compliance-rules) - GDPR compliance package
-- 🎨 [Design Standards](https://github.com/github/design-guidelines) - Accessibility and design system package
-- 🤖 [Agents.md Standard](https://github.com/joggrdocs/agents.md) - Universal AI agent compatibility
+- 🔧 [form-builder Skill](https://github.com/danielmeppiel/form-builder) - React Hook Form + Zod patterns
+- 🏢 [compliance-rules Guardrail](https://github.com/danielmeppiel/compliance-rules) - GDPR compliance package
+- 🎨 [design-guidelines Guardrail](https://github.com/danielmeppiel/design-guidelines) - Accessibility and design system
+- 🤖 [Agents.md Standard](https://agents.md) - Universal AI agent compatibility
 
 ---
 

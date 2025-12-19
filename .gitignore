@@ -18,4 +18,21 @@ copilot.log
 # Build artifacts  
 *.tsbuildinfo
 AGENTS.md
+CLAUDE.md
 .apm/compiled
+
+# APM integrated prompts
+.github/prompts/@*.prompt.md
+
+
+# APM integrated prompts
+.github/prompts/*-apm.prompt.md
+
+
+# APM integrated agents
+.github/agents/*-apm.agent.md
+.github/agents/*-apm.chatmode.md
+
+# APM-generated Claude commands
+.claude/commands/*-apm.md
+.claude/skills/*
