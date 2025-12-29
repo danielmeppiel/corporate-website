@@ -6,6 +6,23 @@ import './ContactForm.scss';
  * Contact form component following WCAG 2.1 AA accessibility standards
  * and corporate design guidelines from APM dependencies
  */
+
+/**
+ * Contact form for collecting a user's name, email, and message.
+ *
+ * @remarks
+ * - Uses `<label htmlFor>` with matching `id` for each field.
+ * - Uses `aria-invalid`, `aria-describedby`, and `role="alert"` so
+ *   screen readers can announce errors and help text.
+ * - Relies on native HTML form semantics for keyboard navigation
+ *   (Tab to move, Enter to submit), meeting WCAG form basics.
+ *
+ * @example
+ * ```
+ * <ContactForm />
+ * ```
+ */
+
 export const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -15,6 +32,15 @@ export const ContactForm = () => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  /**
+   * Handles form submit: validates data, logs the event, and sends it.
+   *
+   * @remarks
+   * - If validation fails, sets field errors and skips logging/submission.
+   * - If validation passes, logs the event for compliance and then calls
+   *   {@link submitContactForm}.
+   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -169,6 +195,14 @@ export const ContactForm = () => {
 };
 
 // Helper functions for compliance
+
+/**
+ * Logs a user action for compliance / audit.
+ *
+ * @param eventType - Type of event, for example `"form_submission"`.
+ * @param eventData - Extra data such as fields and timestamp.
+ */
+
 async function logUserInteraction(eventType, eventData) {
   // Implementation would send to secure backend
   console.log('Audit log:', { eventType, eventData });
