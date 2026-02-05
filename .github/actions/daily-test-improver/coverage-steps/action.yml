@@ -25,8 +25,8 @@ runs:
         npm install | tee -a coverage-steps.log
 
         echo "=== Installing testing frameworks ===" | tee -a coverage-steps.log
-        # Install Vitest and testing dependencies
-        npm install --save-dev vitest @vitest/ui c8 @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom | tee -a coverage-steps.log
+        # Install Vitest and testing dependencies with v8 coverage provider
+        npm install --save-dev vitest @vitest/ui @vitest/coverage-v8 @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom | tee -a coverage-steps.log
 
         echo "=== Node.js setup complete ===" | tee -a coverage-steps.log
 
@@ -36,7 +36,7 @@ runs:
       run: |
         echo "=== Installing Python testing frameworks ===" | tee -a coverage-steps.log
         python -m pip install --upgrade pip | tee -a coverage-steps.log
-        pip install pytest pytest-cov coverage fastapi httpx | tee -a coverage-steps.log
+        pip install pytest pytest-cov coverage fastapi httpx requests | tee -a coverage-steps.log
 
         echo "=== Python setup complete ===" | tee -a coverage-steps.log
 
@@ -50,39 +50,17 @@ runs:
 
         export default defineConfig({
           test: {
-            environment: 'jsdom',
-            setupFiles: ['./tests/setup.js'],
+            environment: 'node',
+            globals: true,
             coverage: {
-              provider: 'c8',
-              reporter: ['text', 'json', 'html'],
+              provider: 'v8',
+              reporter: ['text', 'json', 'html', 'json-summary'],
               reportsDirectory: './coverage/js',
               include: ['src/**/*.{ts,tsx,js,jsx}', 'main.js'],
-              exclude: ['node_modules/', 'tests/']
+              exclude: ['node_modules/', 'tests/', 'dist/', 'coverage/']
             }
           }
         })
-        EOF
-
-        # Create test setup file
-        mkdir -p tests
-        cat > tests/setup.js << 'EOF'
-        import '@testing-library/jest-dom'
-
-        // Mock localStorage and sessionStorage for tests
-        const localStorageMock = {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-          removeItem: jest.fn(),
-          clear: jest.fn(),
-        };
-        const sessionStorageMock = {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
-          removeItem: jest.fn(),
-          clear: jest.fn(),
-        };
-        global.localStorage = localStorageMock;
-        global.sessionStorage = sessionStorageMock;
         EOF
 
         echo "=== Vitest configuration created ===" | tee -a coverage-steps.log
