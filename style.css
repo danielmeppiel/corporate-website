@@ -225,14 +225,10 @@ a:hover, a:focus {
   border-color: white;
   color: white;
   text-decoration: none;
-}
-
-.secondary-link:focus {
   outline: 2px solid white;
   outline-offset: 2px;
 }
 
-.cta-button:hover, .cta-button:focus,
 .submit-button:hover, .submit-button:focus {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px 0 rgba(37, 99, 235, 0.4);
