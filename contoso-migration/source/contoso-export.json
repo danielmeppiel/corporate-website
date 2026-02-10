@@ -1,0 +1,59 @@
+{
+  "contosoArchive": {
+    "extractedDate": "2026-01-15",
+    "platformVersion": "Contoso v3.2",
+    "recordCount": 5
+  },
+  "productRecords": [
+    {
+      "sku": "CONTO-A-8472",
+      "productTitle": "Enterprise Analytics Platform",
+      "briefInfo": "Advanced analytics for enterprise data",
+      "pricingTier": "enterprise",
+      "monthlyFee": 299,
+      "featureSet": ["Real-time dashboards", "Predictive modeling", "Custom reports"],
+      "marketSegment": "analytics",
+      "lifecyclePhase": "production"
+    },
+    {
+      "sku": "CONTO-S-1923",
+      "productTitle": "Cloud Storage Solution", 
+      "briefInfo": "Secure cloud storage with 99.9% uptime",
+      "pricingTier": "professional",
+      "monthlyFee": 49,
+      "featureSet": ["1TB Storage", "End-to-end encryption", "24/7 Support"],
+      "marketSegment": "storage",
+      "lifecyclePhase": "production"
+    },
+    {
+      "sku": "CONTO-C-5581",
+      "productTitle": "AI-Powered CRM",
+      "briefInfo": "Customer relationship management with AI insights",
+      "pricingTier": "business",
+      "monthlyFee": 199,
+      "featureSet": ["AI Analytics", "Contact Management", "Sales Pipeline", "Email Integration"],
+      "marketSegment": "crm",
+      "lifecyclePhase": "production"
+    },
+    {
+      "sku": "CONTO-D-3309",
+      "productTitle": "Developer Tools Suite",
+      "briefInfo": "Complete toolkit for modern development teams",
+      "pricingTier": "professional",
+      "monthlyFee": 99,
+      "featureSet": ["Code Review", "CI/CD Pipeline", "Issue Tracking", "Team Collaboration"],
+      "marketSegment": "developer-tools",
+      "lifecyclePhase": "production"
+    },
+    {
+      "sku": "CONTO-M-7714",
+      "productTitle": "Marketing Automation",
+      "briefInfo": "Automate your marketing campaigns",
+      "pricingTier": "business",
+      "monthlyFee": 149,
+      "featureSet": ["Email Campaigns", "Social Media", "Analytics", "A/B Testing"],
+      "marketSegment": "marketing",
+      "lifecyclePhase": "sunset"
+    }
+  ]
+}

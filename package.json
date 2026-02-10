@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "migrate:contoso": "node contoso-migration/run-migration.js"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.10.2",

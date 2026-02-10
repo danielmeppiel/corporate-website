@@ -5,12 +5,27 @@
  * Follows compliance guidelines for data handling and accessibility
  */
 
+import { ContosoProductShowcase } from './src/product-display.js';
+
 // Initialize application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Corporate Website initialized with APM standards');
   initializeAccessibility();
   initializeGDPRCompliance();
+  initializeProductCatalog();
 });
+
+/**
+ * Initialize product catalog from Contoso migration
+ */
+async function initializeProductCatalog() {
+  const catalogDisplay = new ContosoProductShowcase(
+    'product-showcase-area',
+    '/contoso-migration/transformed/corporate-catalog.json'
+  );
+  await catalogDisplay.initialize();
+  console.log('📦 Product catalog loaded from Contoso migration');
+}
 
 /**
  * Show welcome message - demonstrates user interaction logging for audit trails

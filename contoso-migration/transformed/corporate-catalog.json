@@ -1,0 +1,305 @@
+{
+  "formatVersion": "2.0-corporate-inc",
+  "generatedAt": "2026-02-10T05:14:27.513Z",
+  "totalItems": 5,
+  "compliance": {
+    "gdpr": true,
+    "wcag": true,
+    "securityReview": true
+  },
+  "auditLog": [
+    "Loaded undefined records from Contoso vundefined",
+    "Transformed SKU CONTO-A-8472 -> enterprise-analytics-platform",
+    "Transformed SKU CONTO-S-1923 -> cloud-storage-solution",
+    "Transformed SKU CONTO-C-5581 -> ai-powered-crm",
+    "Transformed SKU CONTO-D-3309 -> developer-tools-suite",
+    "Transformed SKU CONTO-M-7714 -> marketing-automation"
+  ],
+  "items": [
+    {
+      "internalId": "CONTO-A-8472",
+      "publicSlug": "enterprise-analytics-platform",
+      "heading": "Enterprise Analytics Platform",
+      "summary": "Advanced analytics for enterprise data",
+      "subscription": {
+        "tier": "enterprise",
+        "usdMonthly": 299,
+        "currency": "USD",
+        "paymentCycle": "monthly-recurring"
+      },
+      "capabilities": [
+        {
+          "order": 1,
+          "text": "Real-time dashboards",
+          "enabled": true
+        },
+        {
+          "order": 2,
+          "text": "Predictive modeling",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "text": "Custom reports",
+          "enabled": true
+        }
+      ],
+      "taxonomy": {
+        "vertical": "analytics",
+        "status": "live",
+        "tags": [
+          "analytics",
+          "enterprise-saas",
+          "b2b"
+        ]
+      },
+      "accessibility": {
+        "ariaLabel": "Enterprise Analytics Platform subscription plan, 299 dollars per month",
+        "wcagCompliance": "AA",
+        "screenReaderOptimized": true
+      },
+      "privacy": {
+        "gdprCompliant": true,
+        "dataSanitized": true,
+        "consentRequired": true,
+        "privacyPolicyUrl": "/legal/privacy"
+      },
+      "meta": {
+        "migratedFrom": "Contoso Platform",
+        "migrationDate": "2026-02-10",
+        "originalSku": "CONTO-A-8472"
+      }
+    },
+    {
+      "internalId": "CONTO-S-1923",
+      "publicSlug": "cloud-storage-solution",
+      "heading": "Cloud Storage Solution",
+      "summary": "Secure cloud storage with 99.9% uptime",
+      "subscription": {
+        "tier": "professional",
+        "usdMonthly": 49,
+        "currency": "USD",
+        "paymentCycle": "monthly-recurring"
+      },
+      "capabilities": [
+        {
+          "order": 1,
+          "text": "1TB Storage",
+          "enabled": true
+        },
+        {
+          "order": 2,
+          "text": "End-to-end encryption",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "text": "24/7 Support",
+          "enabled": true
+        }
+      ],
+      "taxonomy": {
+        "vertical": "storage",
+        "status": "live",
+        "tags": [
+          "storage",
+          "enterprise-saas",
+          "b2b"
+        ]
+      },
+      "accessibility": {
+        "ariaLabel": "Cloud Storage Solution subscription plan, 49 dollars per month",
+        "wcagCompliance": "AA",
+        "screenReaderOptimized": true
+      },
+      "privacy": {
+        "gdprCompliant": true,
+        "dataSanitized": true,
+        "consentRequired": true,
+        "privacyPolicyUrl": "/legal/privacy"
+      },
+      "meta": {
+        "migratedFrom": "Contoso Platform",
+        "migrationDate": "2026-02-10",
+        "originalSku": "CONTO-S-1923"
+      }
+    },
+    {
+      "internalId": "CONTO-C-5581",
+      "publicSlug": "ai-powered-crm",
+      "heading": "AI-Powered CRM",
+      "summary": "Customer relationship management with AI insights",
+      "subscription": {
+        "tier": "business",
+        "usdMonthly": 199,
+        "currency": "USD",
+        "paymentCycle": "monthly-recurring"
+      },
+      "capabilities": [
+        {
+          "order": 1,
+          "text": "AI Analytics",
+          "enabled": true
+        },
+        {
+          "order": 2,
+          "text": "Contact Management",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "text": "Sales Pipeline",
+          "enabled": true
+        },
+        {
+          "order": 4,
+          "text": "Email Integration",
+          "enabled": true
+        }
+      ],
+      "taxonomy": {
+        "vertical": "crm",
+        "status": "live",
+        "tags": [
+          "crm",
+          "enterprise-saas",
+          "b2b"
+        ]
+      },
+      "accessibility": {
+        "ariaLabel": "AI-Powered CRM subscription plan, 199 dollars per month",
+        "wcagCompliance": "AA",
+        "screenReaderOptimized": true
+      },
+      "privacy": {
+        "gdprCompliant": true,
+        "dataSanitized": true,
+        "consentRequired": true,
+        "privacyPolicyUrl": "/legal/privacy"
+      },
+      "meta": {
+        "migratedFrom": "Contoso Platform",
+        "migrationDate": "2026-02-10",
+        "originalSku": "CONTO-C-5581"
+      }
+    },
+    {
+      "internalId": "CONTO-D-3309",
+      "publicSlug": "developer-tools-suite",
+      "heading": "Developer Tools Suite",
+      "summary": "Complete toolkit for modern development teams",
+      "subscription": {
+        "tier": "professional",
+        "usdMonthly": 99,
+        "currency": "USD",
+        "paymentCycle": "monthly-recurring"
+      },
+      "capabilities": [
+        {
+          "order": 1,
+          "text": "Code Review",
+          "enabled": true
+        },
+        {
+          "order": 2,
+          "text": "CI/CD Pipeline",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "text": "Issue Tracking",
+          "enabled": true
+        },
+        {
+          "order": 4,
+          "text": "Team Collaboration",
+          "enabled": true
+        }
+      ],
+      "taxonomy": {
+        "vertical": "developer-tools",
+        "status": "live",
+        "tags": [
+          "developer-tools",
+          "enterprise-saas",
+          "b2b"
+        ]
+      },
+      "accessibility": {
+        "ariaLabel": "Developer Tools Suite subscription plan, 99 dollars per month",
+        "wcagCompliance": "AA",
+        "screenReaderOptimized": true
+      },
+      "privacy": {
+        "gdprCompliant": true,
+        "dataSanitized": true,
+        "consentRequired": true,
+        "privacyPolicyUrl": "/legal/privacy"
+      },
+      "meta": {
+        "migratedFrom": "Contoso Platform",
+        "migrationDate": "2026-02-10",
+        "originalSku": "CONTO-D-3309"
+      }
+    },
+    {
+      "internalId": "CONTO-M-7714",
+      "publicSlug": "marketing-automation",
+      "heading": "Marketing Automation",
+      "summary": "Automate your marketing campaigns",
+      "subscription": {
+        "tier": "business",
+        "usdMonthly": 149,
+        "currency": "USD",
+        "paymentCycle": "monthly-recurring"
+      },
+      "capabilities": [
+        {
+          "order": 1,
+          "text": "Email Campaigns",
+          "enabled": true
+        },
+        {
+          "order": 2,
+          "text": "Social Media",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "text": "Analytics",
+          "enabled": true
+        },
+        {
+          "order": 4,
+          "text": "A/B Testing",
+          "enabled": true
+        }
+      ],
+      "taxonomy": {
+        "vertical": "marketing",
+        "status": "archived",
+        "tags": [
+          "marketing",
+          "enterprise-saas",
+          "b2b"
+        ]
+      },
+      "accessibility": {
+        "ariaLabel": "Marketing Automation subscription plan, 149 dollars per month",
+        "wcagCompliance": "AA",
+        "screenReaderOptimized": true
+      },
+      "privacy": {
+        "gdprCompliant": true,
+        "dataSanitized": true,
+        "consentRequired": true,
+        "privacyPolicyUrl": "/legal/privacy"
+      },
+      "meta": {
+        "migratedFrom": "Contoso Platform",
+        "migrationDate": "2026-02-10",
+        "originalSku": "CONTO-M-7714"
+      }
+    }
+  ]
+}
