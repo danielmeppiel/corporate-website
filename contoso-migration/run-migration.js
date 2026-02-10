@@ -34,7 +34,7 @@ class ContosoMigrationEngine {
   loadContosoArchive() {
     const rawData = readFileSync(this.sourceLocation, 'utf-8');
     const parsedArchive = JSON.parse(rawData);
-    this.auditTrail.push(`Loaded ${parsedArchive.recordCount} records from Contoso v${parsedArchive.platformVersion}`);
+    this.auditTrail.push(`Loaded ${parsedArchive.contosoArchive.recordCount} records from Contoso ${parsedArchive.contosoArchive.platformVersion}`);
     return parsedArchive;
   }
 

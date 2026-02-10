@@ -92,11 +92,16 @@ Each migrated product includes compliance markers:
 
 ```json
 {
-  "webStandards": {
-    "gdprReady": true,
-    "wcagLevel": "AA",
-    "privacyPolicy": "/legal/privacy",
-    "termsOfService": "/terms"
+  "accessibility": {
+    "ariaLabel": "Product name subscription plan, N dollars per month",
+    "wcagCompliance": "AA",
+    "screenReaderOptimized": true
+  },
+  "privacy": {
+    "gdprCompliant": true,
+    "dataSanitized": true,
+    "consentRequired": true,
+    "privacyPolicyUrl": "/legal/privacy"
   }
 }
 ```
