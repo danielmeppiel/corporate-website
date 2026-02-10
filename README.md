@@ -104,6 +104,31 @@ apm run legal-review       # Legal compliance verification
 apm run gdpr-check         # Data handling assessment
 ```
 
+## 📦 Contoso Product Catalog Migration (Q2 2026)
+
+**Status**: ✅ COMPLETED
+
+This project includes a complete migration of legacy product pages from the Contoso platform to the new Corporate Inc. CMS. The migration ensures full GDPR compliance and WCAG 2.1 AA accessibility standards.
+
+**Features**:
+- 5 enterprise products migrated with complete metadata
+- GDPR-compliant data transformation with PII sanitization
+- WCAG AA accessibility attributes (ARIA labels, semantic HTML)
+- Responsive product showcase with grid layout
+- Automated migration script with audit trail
+
+**Quick Start**:
+```bash
+# Run the Contoso migration
+npm run migrate:contoso
+
+# View migrated products
+npm run dev
+# Navigate to http://localhost:3000/#products
+```
+
+**Documentation**: See [`contoso-migration/MIGRATION-GUIDE.md`](contoso-migration/MIGRATION-GUIDE.md) for complete migration documentation.
+
 ## 🧠 Context Optimization Engine
 
 **The Challenge**: AI agents need exactly the right context for their current task, but loading everything creates cognitive overload, while missing key information breaks workflows.
