@@ -168,7 +168,9 @@ a:hover, a:focus {
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 32px; 
+  min-height: 32px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .secondary-link {
@@ -190,6 +192,7 @@ a:hover, a:focus {
   background-color: var(--surface);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+  text-decoration: none;
 }
 
 /* Feature cards */
