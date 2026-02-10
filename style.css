@@ -280,6 +280,12 @@ a:hover, a:focus {
   font-size: var(--font-size-sm);
 }
 
+.form-description {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+}
+
 .submit-button {
   background-color: var(--primary-color);
   color: white;
