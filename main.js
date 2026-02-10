@@ -37,13 +37,14 @@ function handleSubmit(event) {
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
+    inquiryType: formData.get('inquiry-type'),
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
     consent: true // In real app, this would come from explicit consent checkbox
   };
 
   // Validate required fields
-  if (!data.name || !data.email || !data.message) {
+  if (!data.name || !data.email || !data.inquiryType || !data.message) {
     showError('All fields are required. Please complete the form.');
     return;
   }
@@ -58,12 +59,16 @@ function handleSubmit(event) {
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
-    fields_submitted: ['name', 'email', 'message'],
+    fields_submitted: ['name', 'email', 'inquiry-type', 'message'],
+    inquiry_type: data.inquiryType,
     data_processing_consent: data.consent
   });
 
   // Simulate form submission
-  showSuccess('Thank you for your message! We\'ll get back to you soon.');
+  const responseMessage = data.inquiryType === 'consultation' 
+    ? 'Thank you for your consultation request! Our team will contact you within 24 hours.'
+    : 'Thank you for your message! We\'ll get back to you soon.';
+  showSuccess(responseMessage);
   event.target.reset();
 }
 

@@ -27,8 +27,8 @@
                 <div class="hero-content">
                     <h2>Welcome to Corporate Inc.</h2>
                     <p>Building the future with AI-Native Development</p>
-                    <button class="cta-button" onclick="showMessage()">Get Started</button>
-                    <a href="#contact" class="secondary-link">Learn More</a>
+                    <a href="#contact" class="cta-button">Request a Consultation</a>
+                    <a href="#about" class="secondary-link">Learn More</a>
                 </div>
             </section>
 
@@ -78,6 +78,16 @@
                             <label for="email">Email *</label>
                             <input type="email" id="email" name="email" required aria-describedby="email-help">
                             <small id="email-help">We'll never share your email with anyone else</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="inquiry-type">Inquiry Type *</label>
+                            <select id="inquiry-type" name="inquiry-type" required aria-describedby="inquiry-type-help">
+                                <option value="">Select an option</option>
+                                <option value="consultation">Consultation</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="support">Support</option>
+                            </select>
+                            <small id="inquiry-type-help">What can we help you with?</small>
                         </div>
                         <div class="form-group">
                             <label for="message">Message *</label>
