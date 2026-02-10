@@ -1,6 +1,6 @@
 {
   "formatVersion": "2.0-corporate-inc",
-  "generatedAt": "2026-02-10T05:17:41.793Z",
+  "generatedAt": "2026-02-10T05:18:41.079Z",
   "totalItems": 5,
   "compliance": {
     "gdpr": true,
@@ -8,7 +8,7 @@
     "securityReview": true
   },
   "auditLog": [
-    "Loaded 5 records from Contoso Contoso v3.2",
+    "Loaded 5 records from Contoso v3.2",
     "Transformed SKU CONTO-A-8472 -> enterprise-analytics-platform",
     "Transformed SKU CONTO-S-1923 -> cloud-storage-solution",
     "Transformed SKU CONTO-C-5581 -> ai-powered-crm",
