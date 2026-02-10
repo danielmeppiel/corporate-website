@@ -228,6 +228,15 @@ npm run build           # Build for production
 apm compile             # Generate AGENTS.md from dependencies
 ```
 
+### Meeting Scheduling
+```bash
+# Schedule meetings with calendar integration
+python -m server.meeting_scheduler  # Run example meeting scheduler
+
+# API is available at /api/meetings
+# See docs/MEETING_SCHEDULING.md for complete documentation
+```
+
 ## Installation Options
 
 ### Enterprise Setup (Recommended)
@@ -251,6 +260,7 @@ apm compile             # Generate context from dependencies
 - 🏢 [compliance-rules Guardrail](https://github.com/danielmeppiel/compliance-rules) - GDPR compliance package
 - 🎨 [design-guidelines Guardrail](https://github.com/danielmeppiel/design-guidelines) - Accessibility and design system
 - 🤖 [Agents.md Standard](https://agents.md) - Universal AI agent compatibility
+- 📅 [Meeting Scheduling Documentation](docs/MEETING_SCHEDULING.md) - Calendar integration guide
 
 ---
 
