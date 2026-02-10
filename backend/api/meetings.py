@@ -58,45 +58,39 @@ async def schedule_meeting(request: MeetingRequest) -> Dict[str, Any]:
     Returns:
         Meeting details and scheduling status
     """
-    try:
-        # Convert provider string to enum
-        provider_map = {
-            'google': CalendarProvider.GOOGLE,
-            'outlook': CalendarProvider.OUTLOOK,
-            'manual': CalendarProvider.MANUAL
-        }
-        provider = provider_map.get(request.provider, CalendarProvider.MANUAL)
-        
-        # Prepare meeting data
-        meeting_data = {
-            'title': request.title,
-            'description': request.description,
-            'start_time': request.start_time,
-            'end_time': request.end_time,
-            'attendees': request.attendees,
-            'organizer': request.organizer,
-            'location': request.location
-        }
-        
-        # Schedule the meeting
-        result = meeting_scheduler.schedule_meeting(
-            meeting_data=meeting_data,
-            organizer_id=request.organizer,
-            provider=provider
+    # Convert provider string to enum
+    provider_map = {
+        'google': CalendarProvider.GOOGLE,
+        'outlook': CalendarProvider.OUTLOOK,
+        'manual': CalendarProvider.MANUAL
+    }
+    provider = provider_map.get(request.provider, CalendarProvider.MANUAL)
+    
+    # Prepare meeting data
+    meeting_data = {
+        'title': request.title,
+        'description': request.description,
+        'start_time': request.start_time,
+        'end_time': request.end_time,
+        'attendees': request.attendees,
+        'organizer': request.organizer,
+        'location': request.location
+    }
+    
+    # Schedule the meeting
+    result = meeting_scheduler.schedule_meeting(
+        meeting_data=meeting_data,
+        organizer_id=request.organizer,
+        provider=provider
+    )
+    
+    if not result.get('success'):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get('error', 'Failed to schedule meeting')
         )
-        
-        if not result.get('success'):
-            raise HTTPException(
-                status_code=400,
-                detail=result.get('error', 'Failed to schedule meeting')
-            )
-        
-        return result
-        
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+    
+    return result
 
 
 @router.get("/meetings/{meeting_id}")
@@ -128,49 +122,43 @@ async def update_meeting(
         request: Fields to update
         provider: Calendar provider ('google', 'outlook', or 'manual')
     """
-    try:
-        # Convert provider string to enum
-        provider_map = {
-            'google': CalendarProvider.GOOGLE,
-            'outlook': CalendarProvider.OUTLOOK,
-            'manual': CalendarProvider.MANUAL
-        }
-        calendar_provider = provider_map.get(provider, CalendarProvider.MANUAL)
-        
-        # Prepare updates (only include non-None fields)
-        updates = {}
-        if request.title is not None:
-            updates['title'] = request.title
-        if request.description is not None:
-            updates['description'] = request.description
-        if request.start_time is not None:
-            updates['start_time'] = request.start_time
-        if request.end_time is not None:
-            updates['end_time'] = request.end_time
-        if request.location is not None:
-            updates['location'] = request.location
-        
-        if not updates:
-            raise HTTPException(status_code=400, detail="No updates provided")
-        
-        result = meeting_scheduler.update_meeting(
-            meeting_id=meeting_id,
-            updates=updates,
-            provider=calendar_provider
+    # Convert provider string to enum
+    provider_map = {
+        'google': CalendarProvider.GOOGLE,
+        'outlook': CalendarProvider.OUTLOOK,
+        'manual': CalendarProvider.MANUAL
+    }
+    calendar_provider = provider_map.get(provider, CalendarProvider.MANUAL)
+    
+    # Prepare updates (only include non-None fields)
+    updates = {}
+    if request.title is not None:
+        updates['title'] = request.title
+    if request.description is not None:
+        updates['description'] = request.description
+    if request.start_time is not None:
+        updates['start_time'] = request.start_time
+    if request.end_time is not None:
+        updates['end_time'] = request.end_time
+    if request.location is not None:
+        updates['location'] = request.location
+    
+    if not updates:
+        raise HTTPException(status_code=400, detail="No updates provided")
+    
+    result = meeting_scheduler.update_meeting(
+        meeting_id=meeting_id,
+        updates=updates,
+        provider=calendar_provider
+    )
+    
+    if not result.get('success'):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get('error', 'Failed to update meeting')
         )
-        
-        if not result.get('success'):
-            raise HTTPException(
-                status_code=400,
-                detail=result.get('error', 'Failed to update meeting')
-            )
-        
-        return result
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+    
+    return result
 
 
 @router.delete("/meetings/{meeting_id}")
@@ -182,32 +170,26 @@ async def cancel_meeting(meeting_id: str, provider: str = "manual") -> Dict[str,
         meeting_id: ID of the meeting to cancel
         provider: Calendar provider ('google', 'outlook', or 'manual')
     """
-    try:
-        # Convert provider string to enum
-        provider_map = {
-            'google': CalendarProvider.GOOGLE,
-            'outlook': CalendarProvider.OUTLOOK,
-            'manual': CalendarProvider.MANUAL
-        }
-        calendar_provider = provider_map.get(provider, CalendarProvider.MANUAL)
-        
-        result = meeting_scheduler.cancel_meeting(
-            meeting_id=meeting_id,
-            provider=calendar_provider
+    # Convert provider string to enum
+    provider_map = {
+        'google': CalendarProvider.GOOGLE,
+        'outlook': CalendarProvider.OUTLOOK,
+        'manual': CalendarProvider.MANUAL
+    }
+    calendar_provider = provider_map.get(provider, CalendarProvider.MANUAL)
+    
+    result = meeting_scheduler.cancel_meeting(
+        meeting_id=meeting_id,
+        provider=calendar_provider
+    )
+    
+    if not result.get('success'):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get('error', 'Failed to cancel meeting')
         )
-        
-        if not result.get('success'):
-            raise HTTPException(
-                status_code=400,
-                detail=result.get('error', 'Failed to cancel meeting')
-            )
-        
-        return result
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+    
+    return result
 
 
 @router.get("/meetings/providers/status")

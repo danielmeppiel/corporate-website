@@ -15,6 +15,13 @@ apm_modules/
 *.log
 copilot.log
 
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
 # Build artifacts  
 *.tsbuildinfo
 AGENTS.md
