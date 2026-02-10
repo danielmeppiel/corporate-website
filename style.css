@@ -171,6 +171,15 @@ a:hover, a:focus {
   min-height: 32px; 
 }
 
+.cta-button-link {
+  display: inline-block;
+  text-decoration: none;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-lg);
+  min-height: 44px;
+  line-height: 1.5;
+}
+
 .secondary-link {
   color: #999999; 
   text-decoration: none;
@@ -186,6 +195,7 @@ a:hover, a:focus {
 }
 
 .cta-button:hover, .cta-button:focus,
+.cta-button-link:hover, .cta-button-link:focus,
 .submit-button:hover, .submit-button:focus {
   background-color: var(--surface);
   transform: translateY(-1px);
@@ -268,6 +278,20 @@ a:hover, a:focus {
   margin-top: var(--space-1);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  width: 100%;
 }
 
 /* Footer */
