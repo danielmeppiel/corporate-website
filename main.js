@@ -12,19 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeGDPRCompliance();
 });
 
-/**
- * Show welcome message - demonstrates user interaction logging for audit trails
- */
-function showMessage() {
-  // Log user interaction (compliance requirement for audit trails)
-  logUserInteraction('cta_button_click', {
-    timestamp: new Date().toISOString(),
-    action: 'hero_cta_clicked',
-    user_agent: navigator.userAgent.substring(0, 100) // Truncated for privacy
-  });
-
-  alert('🎉 Welcome! This site is built with APM dependencies for compliance and design standards.');
-}
 
 /**
  * Handle contact form submission with GDPR compliance
@@ -332,11 +319,9 @@ function announceToScreenReader(message, priority = 'polite') {
 
 // Export functions for potential testing or external use
 window.corporateWebsite = {
-  showMessage,
   handleSubmit,
   logUserInteraction
 };
 
 // Make functions globally available (for inline event handlers)
-window.showMessage = showMessage;
 window.handleSubmit = handleSubmit;
