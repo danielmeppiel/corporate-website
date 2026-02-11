@@ -37,13 +37,14 @@ function handleSubmit(event) {
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
+    company: formData.get('company'),
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
     consent: true // In real app, this would come from explicit consent checkbox
   };
 
   // Validate required fields
-  if (!data.name || !data.email || !data.message) {
+  if (!data.name || !data.email || !data.company || !data.message) {
     showError('All fields are required. Please complete the form.');
     return;
   }
@@ -58,7 +59,7 @@ function handleSubmit(event) {
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
-    fields_submitted: ['name', 'email', 'message'],
+    fields_submitted: ['name', 'email', 'company', 'message'],
     data_processing_consent: data.consent
   });
 
