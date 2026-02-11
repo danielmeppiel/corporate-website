@@ -17,7 +17,7 @@ def test_recaptcha_verification_without_key():
     """Test reCAPTCHA verification without secret key"""
     # Should return success in development mode
     result = verify_recaptcha_token('test_token', '127.0.0.1')
-    assert result['success'] == True
+    assert result['success'] is True
     assert result['score'] == 1.0
     print('✓ reCAPTCHA verification works in development mode')
 
@@ -50,7 +50,7 @@ def test_process_submission_with_recaptcha():
         recaptcha_token='test_recaptcha_token'
     )
     
-    assert result['success'] == True
+    assert result['success'] is True
     print('✓ Form submission with reCAPTCHA token succeeds')
 
 
@@ -74,7 +74,7 @@ def test_process_submission_without_recaptcha():
         recaptcha_token=None  # No reCAPTCHA token
     )
     
-    assert result['success'] == True
+    assert result['success'] is True
     print('✓ Form submission without reCAPTCHA token still works (optional)')
 
 

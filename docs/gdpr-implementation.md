@@ -11,7 +11,7 @@ This document describes the GDPR compliance features implemented in the Contoso 
 **Functionality:**
 - Displays on first visit when no consent is stored
 - Three cookie categories: Essential (required), Analytics, Marketing
-- Three action buttons:
+- Two action buttons:
   - "Accept All" - enables all cookies
   - "Essential Only" - only required cookies
 - Stores consent preferences in localStorage with version tracking
@@ -35,8 +35,8 @@ This document describes the GDPR compliance features implemented in the Contoso 
 ### 3. Google reCAPTCHA v3 Integration
 
 **Frontend:** 
-- Script tag in `index.html` head section
-- Token generation in `main.js` handleSubmit function
+- Script tag in `index.html` head section (replace '6LdContosoKeyPlaceholder' with your actual site key)
+- Token generation in `main.js` handleSubmit function (update site key here too)
 - Uses action name: 'contact_submit'
 
 **Backend:**
@@ -47,8 +47,10 @@ This document describes the GDPR compliance features implemented in the Contoso 
 - Gracefully degrades in development (no secret key)
 
 **Configuration:**
-- Site key: Set in index.html script tag
+- Site key: Replace placeholder '6LdContosoKeyPlaceholder' in index.html and main.js with your actual key
 - Secret key: Set via `RECAPTCHA_SECRET_KEY` environment variable
+
+**Important:** Before deploying, replace all instances of '6LdContosoKeyPlaceholder' with your actual Google reCAPTCHA v3 site key.
 
 ### 4. Privacy Policy
 
