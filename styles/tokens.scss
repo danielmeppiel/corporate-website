@@ -2,9 +2,9 @@
 // This file demonstrates how design standards are consistently applied
 
 // Color System - WCAG 2.1 AA compliant colors with 4.5:1+ contrast ratios
-$primary-color: #2563eb;
-$primary-color-dark: #1d4ed8;
-$primary-color-light: #3b82f6;
+$primary-color: #059669;
+$primary-color-dark: #047857;
+$primary-color-light: #10b981;
 
 $secondary-color: #64748b;
 $secondary-color-dark: #475569;
@@ -80,7 +80,7 @@ $shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
 // Focus ring for accessibility compliance
-$focus-ring: 0 0 0 3px rgb(37 99 235 / 0.1);
+$focus-ring: 0 0 0 3px rgb(5 150 105 / 0.1);
 $focus-ring-error: 0 0 0 3px rgb(220 38 38 / 0.1);
 
 // Responsive breakpoints following mobile-first approach
