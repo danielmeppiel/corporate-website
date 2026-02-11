@@ -203,13 +203,6 @@ a:hover, a:focus {
   color: var(--primary-color);
 }
 
-.cta-button:hover, .cta-button:focus {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  text-decoration: none;
-  color: var(--primary-color);
-}
-
 .submit-button {
   background-color: var(--primary-color);
   color: white;
