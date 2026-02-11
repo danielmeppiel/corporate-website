@@ -320,3 +320,64 @@ a:hover, a:focus {
     scroll-behavior: auto;
   }
 }
+
+/* Privacy consent checkbox styling */
+.privacy-consent-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  padding: 16px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  transition: border-color 0.2s ease;
+}
+
+.privacy-consent-wrapper:has(input:checked) {
+  border-color: var(--primary-color);
+  background: #eff6ff;
+}
+
+.privacy-consent-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  accent-color: var(--primary-color);
+}
+
+.privacy-consent-text {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.privacy-consent-text a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.privacy-consent-text a:hover {
+  color: #1d4ed8;
+}
+
+.privacy-consent-text a:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+#recaptcha-notice {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+#recaptcha-notice a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}

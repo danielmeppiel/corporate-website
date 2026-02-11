@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corporate Website</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdContosoKeyPlaceholder" async defer></script>
 </head>
 <body>
     <div id="app">
@@ -84,7 +85,16 @@
                             <textarea id="message" name="message" rows="4" required aria-describedby="message-help"></textarea>
                             <small id="message-help">Tell us how we can help you</small>
                         </div>
+                        <div class="form-group">
+                            <label class="privacy-consent-wrapper">
+                                <input type="checkbox" id="privacy-consent" name="privacy-consent" required class="privacy-consent-checkbox">
+                                <span class="privacy-consent-text">I agree to Contoso's data processing as described in the <a href="#privacy-policy" id="privacy-policy-link">Privacy Policy</a>. My data will be stored for 5 years.</span>
+                            </label>
+                        </div>
                         <button type="submit" class="submit-button">Send Message</button>
+                        <div id="recaptcha-notice" style="display:none;">
+                            <small>Protected by reCAPTCHA: <a href="https://policies.google.com/privacy">Privacy</a> | <a href="https://policies.google.com/terms">Terms</a></small>
+                        </div>
                     </form>
                 </div>
             </section>
@@ -98,6 +108,20 @@
                 </p>
             </div>
         </footer>
+    </div>
+
+    <!-- Contoso Cookie Notice -->
+    <div id="contoso-cookie-notice" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#1a1a1a; color:#fff; padding:20px; z-index:9999;">
+        <div style="max-width:1200px; margin:0 auto; display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+            <div style="flex:1; min-width:300px;">
+                <strong>Cookie Notice</strong>
+                <p style="margin:5px 0 0 0; font-size:14px;">Contoso uses essential cookies for site functionality. We need your consent for analytics and marketing cookies.</p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button id="accept-all-cookies" style="background:#10b981; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600;">Accept All</button>
+                <button id="essential-cookies-only" style="background:#6b7280; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Essential Only</button>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="/main.js"></script>

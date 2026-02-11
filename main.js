@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Corporate Website initialized with APM standards');
   initializeAccessibility();
   initializeGDPRCompliance();
+  initializeContosoConsent();
 });
 
 /**
@@ -30,16 +31,24 @@ function showMessage() {
  * Handle contact form submission with GDPR compliance
  * @param {Event} event - Form submission event
  */
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
   
   const formData = new FormData(event.target);
+  const privacyConsent = document.getElementById('privacy-consent');
+  
+  // Check privacy consent checkbox
+  if (!privacyConsent || !privacyConsent.checked) {
+    showError('You must agree to our privacy policy to submit the form.');
+    return;
+  }
+  
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
-    consent: true // In real app, this would come from explicit consent checkbox
+    consent_given: true
   };
 
   // Validate required fields
@@ -55,11 +64,23 @@ function handleSubmit(event) {
     return;
   }
 
+  // Get reCAPTCHA token
+  let recaptchaToken = null;
+  try {
+    if (window.grecaptcha) {
+      recaptchaToken = await window.grecaptcha.execute('6LdContosoKeyPlaceholder', {action: 'contact_submit'});
+      data.recaptcha_token = recaptchaToken;
+    }
+  } catch (err) {
+    console.warn('reCAPTCHA execution failed', err);
+  }
+
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
     fields_submitted: ['name', 'email', 'message'],
-    data_processing_consent: data.consent
+    data_processing_consent: data.consent_given,
+    recaptcha_used: !!recaptchaToken
   });
 
   // Simulate form submission
@@ -142,6 +163,98 @@ function initializeGDPRCompliance() {
   cleanupExpiredData(retentionPolicy);
   
   console.log('🔒 GDPR compliance features initialized');
+}
+
+/**
+ * Initialize Contoso cookie consent system
+ */
+function initializeContosoConsent() {
+  const contosoConsentKey = 'contoso_cookie_consent_v1';
+  const storedConsent = localStorage.getItem(contosoConsentKey);
+  
+  if (!storedConsent) {
+    const cookieNotice = document.getElementById('contoso-cookie-notice');
+    if (cookieNotice) {
+      cookieNotice.style.display = 'block';
+      
+      document.getElementById('accept-all-cookies').addEventListener('click', () => {
+        const consentData = {
+          essential: true,
+          analytics: true,
+          marketing: true,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(contosoConsentKey, JSON.stringify(consentData));
+        cookieNotice.style.display = 'none';
+        logUserInteraction('cookie_consent', { consent_type: 'all' });
+        
+        // Show reCAPTCHA notice when cookies accepted
+        const recaptchaNotice = document.getElementById('recaptcha-notice');
+        if (recaptchaNotice) recaptchaNotice.style.display = 'block';
+      });
+      
+      document.getElementById('essential-cookies-only').addEventListener('click', () => {
+        const consentData = {
+          essential: true,
+          analytics: false,
+          marketing: false,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(contosoConsentKey, JSON.stringify(consentData));
+        cookieNotice.style.display = 'none';
+        logUserInteraction('cookie_consent', { consent_type: 'essential_only' });
+      });
+    }
+  } else {
+    // If consent already given, show reCAPTCHA notice
+    const consent = JSON.parse(storedConsent);
+    if (consent.analytics || consent.marketing) {
+      const recaptchaNotice = document.getElementById('recaptcha-notice');
+      if (recaptchaNotice) recaptchaNotice.style.display = 'block';
+    }
+  }
+  
+  // Add privacy policy link handler
+  const privacyLink = document.getElementById('privacy-policy-link');
+  if (privacyLink) {
+    privacyLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showPrivacyPolicyModal();
+    });
+  }
+}
+
+/**
+ * Show privacy policy modal
+ */
+function showPrivacyPolicyModal() {
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px;';
+  modal.innerHTML = `
+    <div style="background:white; max-width:800px; max-height:80vh; overflow-y:auto; padding:30px; border-radius:8px;">
+      <h2 style="margin-top:0;">Contoso Industries Privacy Policy</h2>
+      <h3>Data Collection & Processing</h3>
+      <p>When you submit our contact form, we collect: name, email address, and message content. This data is processed to respond to your inquiry.</p>
+      <h3>Data Retention</h3>
+      <p>Contact form submissions are retained for 5 years to maintain our business records and comply with legal requirements.</p>
+      <h3>Your Rights</h3>
+      <p>Under GDPR, you have the right to access, correct, or delete your personal data. Contact us at privacy@contoso.com to exercise these rights.</p>
+      <h3>Cookies</h3>
+      <p>We use essential cookies for site functionality. With your consent, we may use analytics cookies to improve our services.</p>
+      <h3>Security</h3>
+      <p>We protect your data using industry-standard security measures including IP address hashing and encrypted storage.</p>
+      <button id="close-privacy-modal" style="margin-top:20px; padding:10px 24px; background:#2563eb; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Close</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  document.getElementById('close-privacy-modal').addEventListener('click', () => {
+    modal.remove();
+  });
+  
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
 }
 
 /**

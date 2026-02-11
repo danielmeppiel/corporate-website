@@ -7,6 +7,9 @@ import json
 import hashlib
 import logging
 import uuid
+import os
+import urllib.request
+import urllib.parse
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
@@ -142,11 +145,52 @@ def validate_csrf_token(token: str, session_token: str) -> bool:
     return token and len(token) == 32 and token.isalnum()
 
 
+def verify_recaptcha_token(token: str, remote_ip: str) -> Dict[str, Any]:
+    """
+    Verify reCAPTCHA token with Google's API
+    Returns verification result with score
+    """
+    secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+    
+    if not secret_key:
+        # Development mode - skip verification
+        return {'success': True, 'score': 1.0, 'action': 'contact_submit'}
+    
+    verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+    params = urllib.parse.urlencode({
+        'secret': secret_key,
+        'response': token,
+        'remoteip': remote_ip
+    }).encode('utf-8')
+    
+    try:
+        req = urllib.request.Request(verify_url, data=params)
+        with urllib.request.urlopen(req, timeout=5) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            
+            # Log verification for audit
+            AuditLogger.log_event('recaptcha_verification', {
+                'success': result.get('success', False),
+                'score': result.get('score', 0.0),
+                'action': result.get('action', ''),
+                'challenge_ts': result.get('challenge_ts', '')
+            })
+            
+            return result
+    except Exception as e:
+        AuditLogger.log_event('recaptcha_verification_error', {
+            'error': str(e)
+        })
+        # On error, return failure to be safe
+        return {'success': False, 'error': str(e)}
+
+
 class ContactFormHandler:
     """Handle contact form submissions with compliance measures"""
     
     def __init__(self):
         self.rate_limiter = {}  # In production, use Redis or similar
+        self.recaptcha_threshold = 0.5  # Minimum score for reCAPTCHA v3
     
     def check_rate_limit(self, ip_hash: str, max_requests: int = 5, 
                         window_minutes: int = 5) -> bool:
@@ -172,7 +216,8 @@ class ContactFormHandler:
     
     def process_submission(self, form_data: Dict[str, Any], 
                           ip_address: str, user_agent: str,
-                          csrf_token: str, session_token: str) -> Dict[str, Any]:
+                          csrf_token: str, session_token: str,
+                          recaptcha_token: Optional[str] = None) -> Dict[str, Any]:
         """Process contact form submission with full compliance measures"""
         
         # Hash IP address for privacy
@@ -182,13 +227,30 @@ class ContactFormHandler:
         AuditLogger.log_event('contact_form_attempt', {
             'ip_hash': ip_hash,
             'user_agent': sanitize_user_agent(user_agent),
-            'has_csrf_token': bool(csrf_token)
+            'has_csrf_token': bool(csrf_token),
+            'has_recaptcha': bool(recaptcha_token)
         })
         
         try:
             # Validate CSRF token
             if not validate_csrf_token(csrf_token, session_token):
                 raise ValueError("Invalid CSRF token")
+            
+            # Verify reCAPTCHA if token provided
+            if recaptcha_token:
+                recaptcha_result = verify_recaptcha_token(recaptcha_token, ip_address)
+                
+                if not recaptcha_result.get('success', False):
+                    raise ValueError("reCAPTCHA verification failed")
+                
+                # Check score for v3
+                score = recaptcha_result.get('score', 0.0)
+                if score < self.recaptcha_threshold:
+                    AuditLogger.log_event('recaptcha_low_score', {
+                        'score': score,
+                        'ip_hash': ip_hash
+                    })
+                    raise ValueError("reCAPTCHA score too low")
             
             # Check rate limiting
             if not self.check_rate_limit(ip_hash):
