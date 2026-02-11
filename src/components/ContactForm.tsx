@@ -57,10 +57,37 @@ export const ContactForm = () => {
       errors.name = 'Name is required';
     }
     
+    // Organization field verification
+    const orgField = data.companyName?.trim();
+    if (!orgField || orgField.length === 0) {
+      errors.companyName = 'Organization name must be provided';
+    }
+    
     if (!data.email.trim()) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       errors.email = 'Please enter a valid email address';
+    } else {
+      // Business domain check - reject common personal providers
+      const personalProviders = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com'];
+      const emailDomain = data.email.split('@')[1]?.toLowerCase();
+      if (personalProviders.includes(emailDomain)) {
+        errors.email = 'Corporate email address required for business inquiries';
+      }
+    }
+    
+    // Telephone number verification with international support
+    const phoneInput = data.phone?.trim();
+    if (!phoneInput || phoneInput.length === 0) {
+      errors.phone = 'Contact number is required';
+    } else {
+      // Pattern allows: +1-234-567-8900, (123) 456-7890, +44 20 7123 4567, etc.
+      const telephonePattern = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+      if (!telephonePattern.test(phoneInput)) {
+        errors.phone = 'Enter a valid telephone number with area code';
+      } else if (phoneInput.replace(/\D/g, '').length < 10) {
+        errors.phone = 'Telephone number must contain at least 10 digits';
+      }
     }
     
     if (!data.message.trim()) {
@@ -98,6 +125,31 @@ export const ContactForm = () => {
       </div>
 
       <div className="form-group">
+        <label htmlFor="organization" className="form-label">
+          Company Name *
+        </label>
+        <input
+          type="text"
+          id="organization"
+          name="companyName"
+          className={`form-input ${errors.companyName ? 'form-input--error' : ''}`}
+          value={formData.companyName}
+          onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+          aria-describedby={errors.companyName ? 'organization-error' : 'organization-help'}
+          aria-invalid={!!errors.companyName}
+          required
+        />
+        {errors.companyName && (
+          <div id="organization-error" className="form-error" role="alert">
+            {errors.companyName}
+          </div>
+        )}
+        <div id="organization-help" className="form-help">
+          Enter your organization or business name
+        </div>
+      </div>
+
+      <div className="form-group">
         <label htmlFor="email" className="form-label">
           Email *
         </label>
@@ -119,6 +171,31 @@ export const ContactForm = () => {
         )}
         <div id="email-help" className="form-help">
           We'll never share your email with anyone else
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="telephone" className="form-label">
+          Phone Number *
+        </label>
+        <input
+          type="tel"
+          id="telephone"
+          name="phone"
+          className={`form-input ${errors.phone ? 'form-input--error' : ''}`}
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          aria-describedby={errors.phone ? 'telephone-error' : 'telephone-help'}
+          aria-invalid={!!errors.phone}
+          required
+        />
+        {errors.phone && (
+          <div id="telephone-error" className="form-error" role="alert">
+            {errors.phone}
+          </div>
+        )}
+        <div id="telephone-help" className="form-help">
+          Include country code for international numbers
         </div>
       </div>
 
