@@ -57,9 +57,9 @@ export const ContactForm = () => {
       errors.name = 'Name is required';
     }
     
-    // Organization field verification
+    // Company name field verification
     const orgField = data.companyName?.trim();
-    if (!orgField || orgField.length === 0) {
+    if (!orgField) {
       errors.companyName = 'Organization name must be provided';
     }
     
@@ -76,17 +76,17 @@ export const ContactForm = () => {
       }
     }
     
-    // Telephone number verification with international support
+    // Phone number verification with international support
     const phoneInput = data.phone?.trim();
-    if (!phoneInput || phoneInput.length === 0) {
+    if (!phoneInput) {
       errors.phone = 'Contact number is required';
     } else {
       // Pattern allows: +1-234-567-8900, (123) 456-7890, +44 20 7123 4567, etc.
-      const telephonePattern = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
-      if (!telephonePattern.test(phoneInput)) {
-        errors.phone = 'Enter a valid telephone number with area code';
+      const phonePattern = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+      if (!phonePattern.test(phoneInput)) {
+        errors.phone = 'Enter a valid phone number with area code';
       } else if (phoneInput.replace(/\D/g, '').length < 10) {
-        errors.phone = 'Telephone number must contain at least 10 digits';
+        errors.phone = 'Phone number must contain at least 10 digits';
       }
     }
     
@@ -125,26 +125,26 @@ export const ContactForm = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="organization" className="form-label">
+        <label htmlFor="companyName" className="form-label">
           Company Name *
         </label>
         <input
           type="text"
-          id="organization"
+          id="companyName"
           name="companyName"
           className={`form-input ${errors.companyName ? 'form-input--error' : ''}`}
           value={formData.companyName}
           onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-          aria-describedby={errors.companyName ? 'organization-error' : 'organization-help'}
+          aria-describedby={errors.companyName ? 'companyName-error' : 'companyName-help'}
           aria-invalid={!!errors.companyName}
           required
         />
         {errors.companyName && (
-          <div id="organization-error" className="form-error" role="alert">
+          <div id="companyName-error" className="form-error" role="alert">
             {errors.companyName}
           </div>
         )}
-        <div id="organization-help" className="form-help">
+        <div id="companyName-help" className="form-help">
           Enter your organization or business name
         </div>
       </div>
@@ -175,26 +175,26 @@ export const ContactForm = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="telephone" className="form-label">
+        <label htmlFor="phone" className="form-label">
           Phone Number *
         </label>
         <input
           type="tel"
-          id="telephone"
+          id="phone"
           name="phone"
           className={`form-input ${errors.phone ? 'form-input--error' : ''}`}
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          aria-describedby={errors.phone ? 'telephone-error' : 'telephone-help'}
+          aria-describedby={errors.phone ? 'phone-error' : 'phone-help'}
           aria-invalid={!!errors.phone}
           required
         />
         {errors.phone && (
-          <div id="telephone-error" className="form-error" role="alert">
+          <div id="phone-error" className="form-error" role="alert">
             {errors.phone}
           </div>
         )}
-        <div id="telephone-help" className="form-help">
+        <div id="phone-help" className="form-help">
           Include country code for international numbers
         </div>
       </div>
