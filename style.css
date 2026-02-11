@@ -146,9 +146,31 @@ a:hover, a:focus {
   justify-content: center;
 }
 
+.hero-badge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .hero-content h2 {
   font-size: var(--font-size-4xl);
   margin-bottom: var(--space-3);
+}
+
+.hero-subtitle {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-4);
+  opacity: 0.9;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-content p {
@@ -159,35 +181,51 @@ a:hover, a:focus {
 
 /* Buttons - Minimum 44px touch target */
 .cta-button {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
+  display: inline-block;
+  background: white;
+  color: var(--primary-color);
   border: none;
-  padding: var(--space-1) var(--space-3); 
-  font-size: var(--font-size-sm);
+  padding: var(--space-2) var(--space-4); 
+  font-size: var(--font-size-base);
   font-weight: 600;
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 32px; 
-}
-
-.secondary-link {
-  color: #999999; 
+  min-height: 44px;
   text-decoration: none;
-  font-size: 14px; 
-  padding: 8px 12px; 
-  margin-left: var(--space-2);
-  border: 1px solid #cccccc;
-  border-radius: var(--radius-sm);
+  line-height: 1.5;
 }
 
-.secondary-link:focus {
-  outline: none;
+.cta-button:hover, .cta-button:focus {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+  color: var(--primary-color);
 }
 
-.cta-button:hover, .cta-button:focus,
+.cta-button:hover, .cta-button:focus {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 44px;
+  width: 100%;
+}
+
 .submit-button:hover, .submit-button:focus {
-  background-color: var(--surface);
+  background-color: #1d4ed8;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
