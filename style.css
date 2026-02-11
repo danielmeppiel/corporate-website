@@ -162,23 +162,26 @@ a:hover, a:focus {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
   border: none;
-  padding: var(--space-1) var(--space-3); 
+  padding: 12px 24px;
   font-size: var(--font-size-sm);
   font-weight: 600;
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 32px; 
+  min-height: 44px;
 }
 
 .secondary-link {
   color: #999999; 
   text-decoration: none;
   font-size: 14px; 
-  padding: 8px 12px; 
+  padding: 12px 20px;
   margin-left: var(--space-2);
   border: 1px solid #cccccc;
   border-radius: var(--radius-sm);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .secondary-link:focus {
