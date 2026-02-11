@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Corporate Website initialized with APM standards');
   initializeAccessibility();
   initializeGDPRCompliance();
+  initializeCookieConsent();
+  initializeRecaptcha();
 });
 
 /**
@@ -30,8 +32,15 @@ function showMessage() {
  * Handle contact form submission with GDPR compliance
  * @param {Event} event - Form submission event
  */
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
+  
+  // Check privacy consent checkbox
+  const privacyConsent = document.getElementById('privacy-consent');
+  if (!privacyConsent || !privacyConsent.checked) {
+    showError('You must agree to the Privacy Policy to submit the form.');
+    return;
+  }
   
   const formData = new FormData(event.target);
   const data = {
@@ -39,7 +48,7 @@ function handleSubmit(event) {
     email: formData.get('email'),
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
-    consent: true // In real app, this would come from explicit consent checkbox
+    consent: privacyConsent.checked
   };
 
   // Validate required fields
@@ -55,11 +64,22 @@ function handleSubmit(event) {
     return;
   }
 
+  // Get reCAPTCHA token
+  try {
+    const recaptchaToken = await getRecaptchaToken();
+    data.recaptchaToken = recaptchaToken;
+  } catch (error) {
+    showError('reCAPTCHA verification failed. Please try again.');
+    console.error('reCAPTCHA error:', error);
+    return;
+  }
+
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
     fields_submitted: ['name', 'email', 'message'],
-    data_processing_consent: data.consent
+    data_processing_consent: data.consent,
+    recaptcha_verified: !!data.recaptchaToken
   });
 
   // Simulate form submission
@@ -122,15 +142,6 @@ function initializeAccessibility() {
  * Following compliance-rules package standards
  */
 function initializeGDPRCompliance() {
-  // Check for existing consent
-  const consent = localStorage.getItem('gdpr_consent');
-  
-  if (!consent) {
-    // In a real application, show consent banner
-    console.log('🔒 GDPR compliance: No existing consent found');
-    // showConsentBanner(); // Would implement consent management
-  }
-
   // Set up data retention policy (7 years for audit logs)
   const retentionPolicy = {
     audit_logs: 7 * 365 * 24 * 60 * 60 * 1000, // 7 years in milliseconds
@@ -142,6 +153,156 @@ function initializeGDPRCompliance() {
   cleanupExpiredData(retentionPolicy);
   
   console.log('🔒 GDPR compliance features initialized');
+}
+
+/**
+ * Initialize cookie consent banner
+ */
+function initializeCookieConsent() {
+  const consent = localStorage.getItem('cookie_consent');
+  
+  if (!consent) {
+    // Show cookie consent banner
+    showCookieBanner();
+  } else {
+    // Apply saved consent preferences
+    const preferences = JSON.parse(consent);
+    applyCookiePreferences(preferences);
+  }
+
+  // Set up cookie consent button handlers
+  const acceptAllBtn = document.getElementById('cookie-accept-all');
+  const acceptSelectedBtn = document.getElementById('cookie-accept-selected');
+  const rejectAllBtn = document.getElementById('cookie-reject-all');
+
+  if (acceptAllBtn) {
+    acceptAllBtn.addEventListener('click', () => {
+      const preferences = {
+        essential: true,
+        analytics: true,
+        marketing: true,
+        timestamp: new Date().toISOString()
+      };
+      saveCookieConsent(preferences);
+    });
+  }
+
+  if (acceptSelectedBtn) {
+    acceptSelectedBtn.addEventListener('click', () => {
+      const preferences = {
+        essential: true,
+        analytics: document.getElementById('cookie-analytics')?.checked || false,
+        marketing: document.getElementById('cookie-marketing')?.checked || false,
+        timestamp: new Date().toISOString()
+      };
+      saveCookieConsent(preferences);
+    });
+  }
+
+  if (rejectAllBtn) {
+    rejectAllBtn.addEventListener('click', () => {
+      const preferences = {
+        essential: true,
+        analytics: false,
+        marketing: false,
+        timestamp: new Date().toISOString()
+      };
+      saveCookieConsent(preferences);
+    });
+  }
+  
+  console.log('🍪 Cookie consent initialized');
+}
+
+/**
+ * Show cookie consent banner
+ */
+function showCookieBanner() {
+  const banner = document.getElementById('cookie-consent-banner');
+  if (banner) {
+    banner.style.display = 'block';
+    // Focus on the banner for accessibility
+    banner.focus();
+  }
+}
+
+/**
+ * Hide cookie consent banner
+ */
+function hideCookieBanner() {
+  const banner = document.getElementById('cookie-consent-banner');
+  if (banner) {
+    banner.style.display = 'none';
+  }
+}
+
+/**
+ * Save cookie consent preferences
+ * @param {Object} preferences - Cookie preferences
+ */
+function saveCookieConsent(preferences) {
+  localStorage.setItem('cookie_consent', JSON.stringify(preferences));
+  applyCookiePreferences(preferences);
+  hideCookieBanner();
+  
+  // Log consent for audit trail
+  logUserInteraction('cookie_consent_given', {
+    preferences: preferences,
+    timestamp: preferences.timestamp
+  });
+  
+  showSuccess('Your cookie preferences have been saved.');
+}
+
+/**
+ * Apply cookie preferences
+ * @param {Object} preferences - Cookie preferences
+ */
+function applyCookiePreferences(preferences) {
+  // In a real application, this would enable/disable different tracking scripts
+  if (preferences.analytics) {
+    console.log('✓ Analytics cookies enabled');
+    // Would initialize analytics here
+  }
+  
+  if (preferences.marketing) {
+    console.log('✓ Marketing cookies enabled');
+    // Would initialize marketing pixels here
+  }
+  
+  console.log('Cookie preferences applied:', preferences);
+}
+
+/**
+ * Initialize reCAPTCHA
+ */
+function initializeRecaptcha() {
+  // reCAPTCHA is loaded via script tag and will be ready when needed
+  console.log('🛡️ reCAPTCHA initialized');
+}
+
+/**
+ * Get reCAPTCHA token for form submission
+ * @returns {Promise<string>} reCAPTCHA token
+ */
+async function getRecaptchaToken() {
+  // In production, replace with your actual reCAPTCHA site key
+  const siteKey = '6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+  
+  return new Promise((resolve, reject) => {
+    if (typeof grecaptcha === 'undefined') {
+      // If reCAPTCHA is not loaded, resolve with a placeholder for development
+      console.warn('reCAPTCHA not loaded, using placeholder token');
+      resolve('dev_token_placeholder');
+      return;
+    }
+    
+    grecaptcha.ready(() => {
+      grecaptcha.execute(siteKey, { action: 'submit' })
+        .then(token => resolve(token))
+        .catch(error => reject(error));
+    });
+  });
 }
 
 /**

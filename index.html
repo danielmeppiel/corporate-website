@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corporate Website</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"></script>
 </head>
 <body>
     <div id="app">
@@ -84,6 +85,13 @@
                             <textarea id="message" name="message" rows="4" required aria-describedby="message-help"></textarea>
                             <small id="message-help">Tell us how we can help you</small>
                         </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privacy-consent" name="privacy-consent" required aria-describedby="privacy-help">
+                                <span>I have read and agree to the <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and consent to the processing of my personal data *</span>
+                            </label>
+                            <small id="privacy-help">Your consent is required to process your inquiry in accordance with GDPR</small>
+                        </div>
                         <button type="submit" class="submit-button">Send Message</button>
                     </form>
                 </div>
@@ -94,10 +102,40 @@
             <div class="container">
                 <p>&copy; 2025 Corporate Inc. All rights reserved. | Built with APM Dependencies System</p>
                 <p class="privacy-notice">
-                    <small>This website follows GDPR compliance standards and accessibility guidelines through APM package management.</small>
+                    <small>This website follows GDPR compliance standards and accessibility guidelines through APM package management. | <a href="/privacy-policy.html">Privacy Policy</a></small>
                 </p>
             </div>
         </footer>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent-banner" class="cookie-consent-banner" style="display: none;" role="dialog" aria-labelledby="cookie-consent-title" aria-describedby="cookie-consent-description">
+        <div class="cookie-consent-content">
+            <h3 id="cookie-consent-title">Cookie Consent</h3>
+            <p id="cookie-consent-description">We use cookies to enhance your browsing experience and analyze our traffic. Please choose your cookie preferences:</p>
+            <div class="cookie-options">
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookie-essential" checked disabled>
+                    <span><strong>Essential cookies</strong> - Required for the website to function</span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookie-analytics">
+                    <span><strong>Analytics cookies</strong> - Help us understand how you use our site</span>
+                </label>
+                <label class="cookie-option">
+                    <input type="checkbox" id="cookie-marketing">
+                    <span><strong>Marketing cookies</strong> - Used to deliver relevant content</span>
+                </label>
+            </div>
+            <div class="cookie-actions">
+                <button id="cookie-accept-all" class="cookie-button cookie-button-primary">Accept All</button>
+                <button id="cookie-accept-selected" class="cookie-button cookie-button-secondary">Accept Selected</button>
+                <button id="cookie-reject-all" class="cookie-button cookie-button-tertiary">Reject Non-Essential</button>
+            </div>
+            <p class="cookie-policy-link">
+                <small>Learn more in our <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a></small>
+            </p>
+        </div>
     </div>
 
     <script type="module" src="/main.js"></script>
