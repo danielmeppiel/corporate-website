@@ -7,16 +7,22 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.10.2",
-    "@testing-library/react": "^16.3.0",
-    "jsdom": "^27.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
+    "jsdom": "^27.4.0",
     "lighthouse-cli": "^0.1.2",
     "pa11y": "^9.0.0",
     "vite": "^7.1.5",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "corporate",
