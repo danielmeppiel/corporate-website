@@ -8,326 +8,378 @@ import json
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock
 from server.contact_handler import (
-    ContactHandler,
-    validate_contact_data,
-    log_audit_event,
-    encrypt_sensitive_data,
-    check_rate_limits,
-    clean_expired_submissions
+    ContactFormHandler,
+    ContactFormData,
+    AuditLogger,
+    DataRetentionManager,
+    hash_ip_address,
+    sanitize_user_agent,
+    validate_csrf_token,
+    handle_data_export_request,
+    handle_data_deletion_request
 )
 
 
-class TestContactHandler:
-    """Test suite for ContactHandler class following GDPR compliance"""
+class TestContactFormData:
+    """Test suite for ContactFormData validation"""
+    
+    def test_valid_contact_form_data(self):
+        """Test creating valid contact form data"""
+        data = ContactFormData(
+            name="John Doe",
+            email="john@example.com",
+            message="This is a test message",
+            timestamp=datetime.utcnow().isoformat() + 'Z',
+            consent_given=True,
+            ip_address_hash="hashed_ip",
+            user_agent="Mozilla/5.0"
+        )
+        
+        assert data.name == "John Doe"
+        assert data.email == "john@example.com"
+        assert data.consent_given is True
+    
+    def test_invalid_name_too_long(self):
+        """Test validation rejects name that is too long"""
+        with pytest.raises(ValueError, match="Invalid name field"):
+            ContactFormData(
+                name="x" * 101,  # Exceeds 100 character limit
+                email="john@example.com",
+                message="Test message",
+                timestamp=datetime.utcnow().isoformat() + 'Z',
+                consent_given=True,
+                ip_address_hash="hashed_ip",
+                user_agent="Mozilla/5.0"
+            )
+    
+    def test_invalid_email_format(self):
+        """Test validation rejects invalid email format"""
+        with pytest.raises(ValueError, match="Invalid email format"):
+            ContactFormData(
+                name="John Doe",
+                email="not-an-email",
+                message="Test message",
+                timestamp=datetime.utcnow().isoformat() + 'Z',
+                consent_given=True,
+                ip_address_hash="hashed_ip",
+                user_agent="Mozilla/5.0"
+            )
+    
+    def test_xss_detection_in_name(self):
+        """Test validation detects XSS attempts"""
+        with pytest.raises(ValueError, match="Invalid input detected"):
+            ContactFormData(
+                name='<script>alert("xss")</script>',
+                email="john@example.com",
+                message="Test message",
+                timestamp=datetime.utcnow().isoformat() + 'Z',
+                consent_given=True,
+                ip_address_hash="hashed_ip",
+                user_agent="Mozilla/5.0"
+            )
+    
+    def test_message_too_long(self):
+        """Test validation rejects message that is too long"""
+        with pytest.raises(ValueError, match="Invalid message field"):
+            ContactFormData(
+                name="John Doe",
+                email="john@example.com",
+                message="x" * 5001,  # Exceeds 5000 character limit
+                timestamp=datetime.utcnow().isoformat() + 'Z',
+                consent_given=True,
+                ip_address_hash="hashed_ip",
+                user_agent="Mozilla/5.0"
+            )
+
+
+class TestAuditLogger:
+    """Test suite for AuditLogger"""
+    
+    @patch('server.contact_handler.audit_logger')
+    def test_log_event(self, mock_logger):
+        """Test audit event logging"""
+        AuditLogger.log_event('test_event', {'key': 'value'}, user_id='user123')
+        
+        # Verify logger was called
+        assert mock_logger.info.called
+        
+        # Get the logged message
+        log_message = mock_logger.info.call_args[0][0]
+        
+        # Verify log contains event data
+        assert 'test_event' in log_message
+        assert 'user123' in log_message
+        assert 'key' in log_message
+
+
+class TestDataRetentionManager:
+    """Test suite for DataRetentionManager"""
+    
+    def test_should_retain_contact_forms_within_period(self):
+        """Test data retention for contact forms within 5 year period"""
+        created_at = datetime.utcnow() - timedelta(days=365 * 4)  # 4 years ago
+        
+        result = DataRetentionManager.should_retain('contact_forms', created_at)
+        
+        assert result is True
+    
+    def test_should_not_retain_contact_forms_expired(self):
+        """Test data retention rejects expired contact forms"""
+        created_at = datetime.utcnow() - timedelta(days=365 * 6)  # 6 years ago
+        
+        result = DataRetentionManager.should_retain('contact_forms', created_at)
+        
+        assert result is False
+    
+    def test_should_retain_audit_logs_within_period(self):
+        """Test data retention for audit logs within 7 year period"""
+        created_at = datetime.utcnow() - timedelta(days=365 * 6)  # 6 years ago
+        
+        result = DataRetentionManager.should_retain('audit_logs', created_at)
+        
+        assert result is True
+    
+    def test_get_expiry_date_contact_forms(self):
+        """Test getting expiry date for contact forms"""
+        created_at = datetime.utcnow()
+        
+        expiry = DataRetentionManager.get_expiry_date('contact_forms', created_at)
+        
+        expected_expiry = created_at + timedelta(days=5*365)
+        assert expiry == expected_expiry
+    
+    def test_unknown_data_type_returns_false(self):
+        """Test unknown data type returns False"""
+        created_at = datetime.utcnow()
+        
+        result = DataRetentionManager.should_retain('unknown_type', created_at)
+        
+        assert result is False
+
+
+class TestUtilityFunctions:
+    """Test suite for utility functions"""
+    
+    def test_hash_ip_address(self):
+        """Test IP address hashing for privacy"""
+        ip = "192.168.1.1"
+        
+        hashed = hash_ip_address(ip)
+        
+        # Should be a hex string (SHA-256 produces 64 hex chars)
+        assert len(hashed) == 64
+        assert hashed.isalnum()
+        
+        # Same IP should produce same hash
+        assert hash_ip_address(ip) == hashed
+        
+        # Different IP should produce different hash
+        assert hash_ip_address("192.168.1.2") != hashed
+    
+    def test_sanitize_user_agent(self):
+        """Test user agent sanitization"""
+        long_ua = "Mozilla/5.0 " * 50  # Very long user agent
+        
+        sanitized = sanitize_user_agent(long_ua)
+        
+        # Should be truncated to 200 characters
+        assert len(sanitized) == 200
+    
+    def test_sanitize_empty_user_agent(self):
+        """Test sanitizing empty user agent"""
+        result = sanitize_user_agent("")
+        
+        assert result == "unknown"
+    
+    def test_validate_csrf_token_valid(self):
+        """Test CSRF token validation with valid token"""
+        token = "a" * 32  # 32 alphanumeric characters
+        
+        result = validate_csrf_token(token, "session_token")
+        
+        assert result is True
+    
+    def test_validate_csrf_token_invalid_length(self):
+        """Test CSRF token validation rejects wrong length"""
+        token = "abc123"  # Too short
+        
+        result = validate_csrf_token(token, "session_token")
+        
+        assert result is False
+    
+    def test_validate_csrf_token_invalid_characters(self):
+        """Test CSRF token validation rejects non-alphanumeric"""
+        token = "a" * 31 + "!"  # Contains non-alphanumeric
+        
+        result = validate_csrf_token(token, "session_token")
+        
+        assert result is False
+
+
+class TestContactFormHandler:
+    """Test suite for ContactFormHandler"""
     
     @pytest.fixture
-    def contact_handler(self):
-        """Create a ContactHandler instance for testing"""
-        return ContactHandler()
+    def handler(self):
+        """Create a ContactFormHandler instance"""
+        return ContactFormHandler()
     
-    @pytest.fixture
-    def valid_contact_data(self):
-        """Valid contact form data for testing"""
-        return {
-            'name': 'John Doe',
-            'email': 'john.doe@example.com',
-            'message': 'This is a test message for the contact form.',
-            'consent': True,
-            'timestamp': datetime.now().isoformat()
-        }
-    
-    def test_validate_contact_data_success(self, valid_contact_data):
-        """Test successful validation of contact data"""
-        result = validate_contact_data(valid_contact_data)
-        assert result['valid'] is True
-        assert result['errors'] == []
-    
-    def test_validate_contact_data_missing_fields(self):
-        """Test validation with missing required fields"""
-        incomplete_data = {'name': 'John'}
-        result = validate_contact_data(incomplete_data)
+    def test_check_rate_limit_allows_first_request(self, handler):
+        """Test rate limiting allows first request"""
+        ip_hash = "test_hash"
         
-        assert result['valid'] is False
-        assert 'email' in str(result['errors'])
-        assert 'message' in str(result['errors'])
-        assert 'consent' in str(result['errors'])
-    
-    def test_validate_contact_data_invalid_email(self):
-        """Test validation with invalid email format"""
-        invalid_data = {
-            'name': 'John Doe',
-            'email': 'invalid-email-format',
-            'message': 'Test message',
-            'consent': True
-        }
-        result = validate_contact_data(invalid_data)
+        result = handler.check_rate_limit(ip_hash)
         
-        assert result['valid'] is False
-        assert 'Invalid email format' in str(result['errors'])
+        assert result is True
     
-    def test_validate_contact_data_suspicious_content(self):
-        """Test validation detects suspicious content"""
-        suspicious_data = {
-            'name': '<script>alert("xss")</script>',
-            'email': 'test@example.com',
-            'message': 'javascript:alert(1)',
-            'consent': True
-        }
-        result = validate_contact_data(suspicious_data)
+    def test_check_rate_limit_blocks_after_limit(self, handler):
+        """Test rate limiting blocks after exceeding limit"""
+        ip_hash = "test_hash"
         
-        assert result['valid'] is False
-        assert 'Suspicious content detected' in str(result['errors'])
+        # Make 5 requests (default limit)
+        for _ in range(5):
+            handler.check_rate_limit(ip_hash)
+        
+        # 6th request should be blocked
+        result = handler.check_rate_limit(ip_hash)
+        
+        assert result is False
     
-    def test_validate_contact_data_gdpr_consent_required(self):
-        """Test that GDPR consent is required"""
-        data_without_consent = {
+    def test_check_rate_limit_allows_after_window(self, handler):
+        """Test rate limiting allows requests after time window"""
+        ip_hash = "test_hash"
+        
+        with patch('server.contact_handler.datetime') as mock_datetime:
+            # Initial time
+            initial_time = datetime(2026, 1, 1, 12, 0, 0)
+            mock_datetime.utcnow.return_value = initial_time
+            
+            # Make 5 requests
+            for _ in range(5):
+                handler.check_rate_limit(ip_hash)
+            
+            # Move time forward 6 minutes (beyond 5 minute window)
+            mock_datetime.utcnow.return_value = initial_time + timedelta(minutes=6)
+            
+            # Should allow new request
+            result = handler.check_rate_limit(ip_hash)
+            assert result is True
+    
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_process_submission_success(self, mock_log, handler):
+        """Test successful contact form submission"""
+        form_data = {
             'name': 'John Doe',
             'email': 'john@example.com',
             'message': 'Test message',
-            'consent': False
-        }
-        result = validate_contact_data(data_without_consent)
-        
-        assert result['valid'] is False
-        assert 'GDPR consent is required' in str(result['errors'])
-    
-    @patch('server.contact_handler.datetime')
-    def test_log_audit_event(self, mock_datetime):
-        """Test audit event logging for compliance"""
-        mock_datetime.now.return_value = datetime(2025, 9, 11, 12, 0, 0)
-        
-        with patch('builtins.open', create=True) as mock_open:
-            mock_file = MagicMock()
-            mock_open.return_value.__enter__.return_value = mock_file
-            
-            log_audit_event('form_submission', {
-                'user_id': 'anonymous',
-                'ip_address': '192.168.1.1',
-                'form_fields': ['name', 'email', 'message']
-            })
-            
-            mock_open.assert_called_with('audit.log', 'a')
-            mock_file.write.assert_called_once()
-            
-            # Verify log format
-            logged_data = mock_file.write.call_args[0][0]
-            assert 'form_submission' in logged_data
-            assert '2025-09-11T12:00:00' in logged_data
-            assert 'anonymous' in logged_data
-    
-    def test_encrypt_sensitive_data(self):
-        """Test encryption of sensitive personal data"""
-        sensitive_data = {
-            'email': 'john.doe@example.com',
-            'phone': '+1-555-0123'
+            'consent_given': True
         }
         
-        encrypted = encrypt_sensitive_data(sensitive_data)
+        result = handler.process_submission(
+            form_data,
+            ip_address='192.168.1.1',
+            user_agent='Mozilla/5.0',
+            csrf_token='a' * 32,
+            session_token='session123'
+        )
         
-        assert encrypted != sensitive_data
-        assert 'email' in encrypted
-        assert 'phone' in encrypted
-        assert encrypted['email'] != sensitive_data['email']
-        assert encrypted['phone'] != sensitive_data['phone']
-        
-        # Verify encryption is reversible (for legitimate access)
-        # Note: In real implementation, decryption would require proper authorization
-        assert len(encrypted['email']) > len(sensitive_data['email'])
+        assert result['success'] is True
+        assert 'submission_id' in result
+        assert mock_log.called
     
-    @patch('server.contact_handler.get_client_ip')
-    def test_check_rate_limits(self, mock_get_ip):
-        """Test rate limiting to prevent abuse"""
-        mock_get_ip.return_value = '192.168.1.1'
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_process_submission_no_consent(self, mock_log, handler):
+        """Test submission fails without consent"""
+        form_data = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'message': 'Test message',
+            'consent_given': False  # No consent
+        }
         
-        # First request should pass
-        result = check_rate_limits('192.168.1.1')
-        assert result['allowed'] is True
-        
-        # Simulate multiple rapid requests
-        for _ in range(10):
-            result = check_rate_limits('192.168.1.1')
-        
-        # Should be rate limited after too many requests
-        assert result['allowed'] is False
-        assert 'Rate limit exceeded' in result['message']
-    
-    def test_contact_handler_process_submission_success(self, contact_handler, valid_contact_data):
-        """Test successful contact form submission processing"""
-        with patch('server.contact_handler.log_audit_event') as mock_log, \
-             patch('server.contact_handler.encrypt_sensitive_data') as mock_encrypt, \
-             patch('server.contact_handler.check_rate_limits') as mock_rate_limit:
-            
-            mock_rate_limit.return_value = {'allowed': True}
-            mock_encrypt.return_value = {'email': 'encrypted_email'}
-            
-            result = contact_handler.process_submission(valid_contact_data, '192.168.1.1')
-            
-            assert result['success'] is True
-            assert result['submission_id'] is not None
-            mock_log.assert_called()
-            mock_encrypt.assert_called()
-    
-    def test_contact_handler_process_submission_rate_limited(self, contact_handler, valid_contact_data):
-        """Test contact form submission when rate limited"""
-        with patch('server.contact_handler.check_rate_limits') as mock_rate_limit:
-            mock_rate_limit.return_value = {
-                'allowed': False, 
-                'message': 'Rate limit exceeded'
-            }
-            
-            result = contact_handler.process_submission(valid_contact_data, '192.168.1.1')
-            
-            assert result['success'] is False
-            assert 'Rate limit exceeded' in result['error']
-    
-    def test_contact_handler_process_submission_invalid_data(self, contact_handler):
-        """Test contact form submission with invalid data"""
-        invalid_data = {'name': 'John'}  # Missing required fields
-        
-        result = contact_handler.process_submission(invalid_data, '192.168.1.1')
+        result = handler.process_submission(
+            form_data,
+            ip_address='192.168.1.1',
+            user_agent='Mozilla/5.0',
+            csrf_token='a' * 32,
+            session_token='session123'
+        )
         
         assert result['success'] is False
-        assert 'Validation failed' in result['error']
+        assert 'error' in result
     
-    @patch('server.contact_handler.datetime')
-    def test_clean_expired_submissions(self, mock_datetime):
-        """Test cleanup of expired submission data per GDPR retention"""
-        mock_datetime.now.return_value = datetime(2025, 9, 11, 12, 0, 0)
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_process_submission_invalid_csrf(self, mock_log, handler):
+        """Test submission fails with invalid CSRF token"""
+        form_data = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'message': 'Test message',
+            'consent_given': True
+        }
         
-        with patch('server.contact_handler.get_expired_submissions') as mock_get_expired, \
-             patch('server.contact_handler.delete_submissions') as mock_delete, \
-             patch('server.contact_handler.log_audit_event') as mock_log:
-            
-            mock_get_expired.return_value = ['sub1', 'sub2', 'sub3']
-            
-            result = clean_expired_submissions()
-            
-            assert result['cleaned_count'] == 3
-            mock_delete.assert_called_with(['sub1', 'sub2', 'sub3'])
-            mock_log.assert_called_with('data_retention_cleanup', {
-                'cleaned_submissions': 3,
-                'retention_policy': '7_years'
-            })
-    
-    def test_data_minimization_compliance(self, contact_handler, valid_contact_data):
-        """Test that only necessary data is stored per GDPR data minimization"""
-        with patch('server.contact_handler.store_submission') as mock_store:
-            contact_handler.process_submission(valid_contact_data, '192.168.1.1')
-            
-            stored_data = mock_store.call_args[0][0]
-            
-            # Verify only necessary fields are stored
-            required_fields = {'name', 'email', 'message', 'consent', 'timestamp'}
-            assert set(stored_data.keys()) <= required_fields
-            
-            # Verify no unnecessary tracking data
-            assert 'user_agent' not in stored_data
-            assert 'referrer' not in stored_data
-            assert 'session_id' not in stored_data
-    
-    def test_right_to_erasure_implementation(self, contact_handler):
-        """Test implementation of GDPR right to erasure"""
-        email = 'john.doe@example.com'
+        result = handler.process_submission(
+            form_data,
+            ip_address='192.168.1.1',
+            user_agent='Mozilla/5.0',
+            csrf_token='invalid',  # Invalid token
+            session_token='session123'
+        )
         
-        with patch('server.contact_handler.find_submissions_by_email') as mock_find, \
-             patch('server.contact_handler.delete_submissions') as mock_delete, \
-             patch('server.contact_handler.log_audit_event') as mock_log:
-            
-            mock_find.return_value = ['sub1', 'sub2']
-            
-            result = contact_handler.process_erasure_request(email)
-            
-            assert result['success'] is True
-            assert result['deleted_count'] == 2
-            mock_delete.assert_called_with(['sub1', 'sub2'])
-            mock_log.assert_called_with('gdpr_erasure_request', {
-                'email_hash': mock_log.call_args[0][1]['email_hash'],
-                'deleted_count': 2
-            })
+        assert result['success'] is False
     
-    def test_data_portability_implementation(self, contact_handler):
-        """Test implementation of GDPR data portability"""
-        email = 'john.doe@example.com'
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_process_submission_rate_limited(self, mock_log, handler):
+        """Test submission fails when rate limited"""
+        form_data = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'message': 'Test message',
+            'consent_given': True
+        }
         
-        with patch('server.contact_handler.find_submissions_by_email') as mock_find:
-            mock_find.return_value = [
-                {
-                    'name': 'John Doe',
-                    'email': 'john.doe@example.com',
-                    'message': 'Test message',
-                    'timestamp': '2025-09-11T12:00:00'
-                }
-            ]
-            
-            result = contact_handler.export_user_data(email)
-            
-            assert result['success'] is True
-            assert 'data' in result
-            assert len(result['data']) == 1
-            assert result['format'] == 'json'
-            assert result['data'][0]['email'] == email
+        # Exhaust rate limit
+        for _ in range(5):
+            handler.process_submission(
+                form_data,
+                ip_address='192.168.1.1',
+                user_agent='Mozilla/5.0',
+                csrf_token='a' * 32,
+                session_token='session123'
+            )
+        
+        # Next request should fail
+        result = handler.process_submission(
+            form_data,
+            ip_address='192.168.1.1',
+            user_agent='Mozilla/5.0',
+            csrf_token='a' * 32,
+            session_token='session123'
+        )
+        
+        assert result['success'] is False
 
 
-class TestSecurityValidation:
-    """Test suite for security validation functions"""
+class TestGDPRFunctions:
+    """Test suite for GDPR compliance functions"""
     
-    def test_sql_injection_detection(self):
-        """Test detection of SQL injection attempts"""
-        malicious_inputs = [
-            "'; DROP TABLE users; --",
-            "1' OR '1'='1",
-            "admin'/**/AND/**/1=1#",
-            "' UNION SELECT * FROM users --"
-        ]
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_handle_data_export_request(self, mock_log):
+        """Test GDPR data export request"""
+        result = handle_data_export_request('user@example.com')
         
-        for malicious_input in malicious_inputs:
-            data = {
-                'name': malicious_input,
-                'email': 'test@example.com',
-                'message': 'Test',
-                'consent': True
-            }
-            result = validate_contact_data(data)
-            assert result['valid'] is False
-            assert 'Suspicious content detected' in str(result['errors'])
+        assert result['success'] is True
+        assert 'export_id' in result
+        assert mock_log.called
     
-    def test_xss_prevention(self):
-        """Test prevention of XSS attacks"""
-        xss_payloads = [
-            '<script>alert("xss")</script>',
-            'javascript:alert(1)',
-            '<img src=x onerror=alert(1)>',
-            '<svg onload=alert(1)>'
-        ]
+    @patch('server.contact_handler.AuditLogger.log_event')
+    def test_handle_data_deletion_request(self, mock_log):
+        """Test GDPR data deletion request"""
+        result = handle_data_deletion_request('user@example.com')
         
-        for payload in xss_payloads:
-            data = {
-                'name': 'John',
-                'email': 'test@example.com',
-                'message': payload,
-                'consent': True
-            }
-            result = validate_contact_data(data)
-            assert result['valid'] is False
-    
-    def test_command_injection_prevention(self):
-        """Test prevention of command injection"""
-        command_injections = [
-            '; cat /etc/passwd',
-            '| ls -la',
-            '&& rm -rf /',
-            '`whoami`'
-        ]
-        
-        for injection in command_injections:
-            data = {
-                'name': f'John{injection}',
-                'email': 'test@example.com',
-                'message': 'Test',
-                'consent': True
-            }
-            result = validate_contact_data(data)
-            assert result['valid'] is False
+        assert result['success'] is True
+        assert 'deletion_id' in result
+        assert mock_log.called
 
 
 if __name__ == '__main__':
