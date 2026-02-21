@@ -1,11 +1,14 @@
 import pytest
-import requests
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from backend.api.users import router
 
 class TestUserAPI:
     def setup_method(self):
-        self.client = TestClient(router)
+        # Create a FastAPI app and include the router
+        app = FastAPI()
+        app.include_router(router)
+        self.client = TestClient(app)
     
     def test_get_users_endpoint(self):
         response = self.client.get("/users")
