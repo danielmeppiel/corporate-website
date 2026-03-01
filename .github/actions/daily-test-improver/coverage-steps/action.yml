@@ -8,8 +8,23 @@ runs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
+
+    # Set up hosts file for CI environment (if missing)
+    - name: Set up hosts file
+      shell: bash
+      run: |
+        echo "=== Setting up hosts file ===" | tee -a coverage-steps.log
+        if [ ! -f /etc/hosts ]; then
+          echo "Creating /etc/hosts file for CI environment" | tee -a coverage-steps.log
+          sudo mkdir -p /etc
+          echo "127.0.0.1 localhost" | sudo tee /etc/hosts
+          echo "::1 localhost" | sudo tee -a /etc/hosts
+        else
+          echo "/etc/hosts already exists" | tee -a coverage-steps.log
+        fi
+        echo "=== Hosts file setup complete ===" | tee -a coverage-steps.log
 
     # Set up Python environment for backend tests
     - name: Set up Python
@@ -25,8 +40,8 @@ runs:
         npm install | tee -a coverage-steps.log
 
         echo "=== Installing testing frameworks ===" | tee -a coverage-steps.log
-        # Install Vitest and testing dependencies with v8 coverage provider
-        npm install --save-dev vitest @vitest/ui @vitest/coverage-v8 @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom | tee -a coverage-steps.log
+        # Install Vitest and testing dependencies with v8 coverage provider and happy-dom
+        npm install --save-dev vitest @vitest/ui @vitest/coverage-v8 @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom happy-dom | tee -a coverage-steps.log
 
         echo "=== Node.js setup complete ===" | tee -a coverage-steps.log
 
@@ -50,7 +65,7 @@ runs:
 
         export default defineConfig({
           test: {
-            environment: 'node',
+            environment: 'happy-dom',
             globals: true,
             coverage: {
               provider: 'v8',
