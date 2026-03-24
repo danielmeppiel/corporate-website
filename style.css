@@ -159,35 +159,61 @@ a:hover, a:focus {
 
 /* Buttons - Minimum 44px touch target */
 .cta-button {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: inline-block;
+  background-color: #059669;
   color: white;
   border: none;
-  padding: var(--space-1) var(--space-3); 
-  font-size: var(--font-size-sm);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
   font-weight: 600;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 32px; 
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 44px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.cta-button--secondary {
+  background-color: transparent;
+  color: #059669;
+  border: 2px solid #059669;
+}
+
+.cta-button--secondary:hover,
+.cta-button--secondary:focus {
+  background-color: #059669;
+  color: white;
+}
+
+.section-cta {
+  margin-top: var(--space-6);
+  text-align: center;
 }
 
 .secondary-link {
-  color: #999999; 
+  color: white;
   text-decoration: none;
-  font-size: 14px; 
-  padding: 8px 12px; 
+  font-size: var(--font-size-base);
+  padding: var(--space-2) var(--space-3);
   margin-left: var(--space-2);
-  border: 1px solid #cccccc;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: var(--radius-sm);
+  display: inline-block;
+  min-height: 44px;
+  line-height: 1.5;
 }
 
+.secondary-link:hover,
 .secondary-link:focus {
-  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  text-decoration: none;
 }
 
 .cta-button:hover, .cta-button:focus,
 .submit-button:hover, .submit-button:focus {
-  background-color: var(--surface);
+  background-color: #047857;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -247,7 +273,8 @@ a:hover, a:focus {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: var(--space-2);
   border: 2px solid var(--border);
@@ -258,7 +285,8 @@ a:hover, a:focus {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: var(--primary-color);
   outline: none;
 }
