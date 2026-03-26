@@ -1,22 +1,27 @@
 // React component demonstrating design system usage
 import React, { useState } from 'react';
+import { submitContactForm, logAuditEvent } from '../api/contact';
+import { useRecaptcha } from '../hooks/useRecaptcha';
 import './ContactForm.scss';
 
 /**
- * Contact form component following WCAG 2.1 AA accessibility standards
- * and corporate design guidelines from APM dependencies
+ * Contact form component following WCAG 2.1 AA accessibility standards,
+ * GDPR compliance (privacy consent, reCAPTCHA), and corporate design guidelines
  */
 export const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    privacyConsent: false
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { executeRecaptcha } = useRecaptcha();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -29,20 +34,30 @@ export const ContactForm = () => {
     }
 
     try {
+      // Obtain reCAPTCHA v3 token for bot protection
+      const recaptchaToken = await executeRecaptcha('contact_form');
+
       // Log user interaction for audit trail (compliance requirement)
-      await logUserInteraction('form_submission', {
-        fields: Object.keys(formData),
+      await logAuditEvent('form_submission', {
+        fields: ['name', 'email', 'message'],
         timestamp: new Date().toISOString(),
-        consent_given: true
+        consent_given: formData.privacyConsent
       });
 
-      // Submit form data
-      await submitContactForm(formData);
-      
+      // Submit form data with consent and reCAPTCHA token
+      await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        consent_given: formData.privacyConsent,
+        recaptchaToken
+      });
+
       // Reset form and show success
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', message: '', privacyConsent: false });
       setErrors({});
-      
+      setIsSuccess(true);
+
     } catch (error) {
       setErrors({ submit: 'Failed to submit form. Please try again.' });
     } finally {
@@ -50,25 +65,44 @@ export const ContactForm = () => {
     }
   };
 
-  const validateForm = (data) => {
-    const errors = {};
-    
+  const validateForm = (data: typeof formData) => {
+    const errs: Record<string, string> = {};
+
     if (!data.name.trim()) {
-      errors.name = 'Name is required';
+      errs.name = 'Name is required';
     }
-    
+
     if (!data.email.trim()) {
-      errors.email = 'Email is required';
+      errs.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      errors.email = 'Please enter a valid email address';
+      errs.email = 'Please enter a valid email address';
     }
-    
+
     if (!data.message.trim()) {
-      errors.message = 'Message is required';
+      errs.message = 'Message is required';
     }
-    
-    return errors;
+
+    if (!data.privacyConsent) {
+      errs.privacyConsent = 'You must agree to the privacy policy to continue';
+    }
+
+    return errs;
   };
+
+  if (isSuccess) {
+    return (
+      <div className="contact-form-success" role="status" aria-live="polite">
+        <p>Thank you for your message! We'll get back to you soon.</p>
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={() => setIsSuccess(false)}
+        >
+          Send another message
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
@@ -147,6 +181,36 @@ export const ContactForm = () => {
         </div>
       </div>
 
+      <div className="form-group">
+        <div className="form-checkbox">
+          <input
+            type="checkbox"
+            id="privacyConsent"
+            name="privacyConsent"
+            checked={formData.privacyConsent}
+            onChange={(e) => setFormData({ ...formData, privacyConsent: e.target.checked })}
+            aria-describedby={errors.privacyConsent ? 'privacyConsent-error' : 'privacyConsent-help'}
+            aria-invalid={!!errors.privacyConsent}
+            aria-required="true"
+          />
+          <label htmlFor="privacyConsent" className="form-label form-label--inline">
+            I agree to the{' '}
+            <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+              privacy policy
+            </a>{' '}
+            and consent to the processing of my personal data *
+          </label>
+        </div>
+        {errors.privacyConsent && (
+          <div id="privacyConsent-error" className="form-error" role="alert">
+            {errors.privacyConsent}
+          </div>
+        )}
+        <div id="privacyConsent-help" className="form-help">
+          Required for GDPR compliance. Your data will be handled per our privacy policy.
+        </div>
+      </div>
+
       {errors.submit && (
         <div className="form-error form-error--global" role="alert">
           {errors.submit}
@@ -162,23 +226,8 @@ export const ContactForm = () => {
         {isSubmitting ? 'Sending...' : 'Send Message'}
       </button>
       <div id="submit-help" className="form-help">
-        By submitting this form, you agree to our privacy policy
+        This form is protected by reCAPTCHA. By submitting, you confirm agreement to our privacy policy.
       </div>
     </form>
   );
 };
-
-// Helper functions for compliance
-async function logUserInteraction(eventType, eventData) {
-  // Implementation would send to secure backend
-  console.log('Audit log:', { eventType, eventData });
-}
-
-async function submitContactForm(formData) {
-  // Implementation would handle secure submission
-  return fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  });
-}

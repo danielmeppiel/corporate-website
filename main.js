@@ -5,6 +5,9 @@
  * Follows compliance guidelines for data handling and accessibility
  */
 
+const COOKIE_CONSENT_KEY = 'gdpr_cookie_consent';
+const RECAPTCHA_SITE_KEY = window.RECAPTCHA_SITE_KEY || '';
+
 // Initialize application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Corporate Website initialized with APM standards');
@@ -30,16 +33,24 @@ function showMessage() {
  * Handle contact form submission with GDPR compliance
  * @param {Event} event - Form submission event
  */
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
-  
+
   const formData = new FormData(event.target);
+  const privacyConsent = formData.get('privacyConsent') === 'on';
+
+  // Validate privacy consent (GDPR requirement)
+  if (!privacyConsent) {
+    showError('You must agree to the privacy policy to submit this form.');
+    return;
+  }
+
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
-    consent: true // In real app, this would come from explicit consent checkbox
+    consent_given: privacyConsent
   };
 
   // Validate required fields
@@ -55,11 +66,24 @@ function handleSubmit(event) {
     return;
   }
 
+  // Obtain reCAPTCHA v3 token for bot protection
+  let recaptchaToken = '';
+  if (window.grecaptcha && RECAPTCHA_SITE_KEY) {
+    try {
+      await new Promise((resolve) => window.grecaptcha.ready(resolve));
+      recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' });
+    } catch (err) {
+      console.warn('reCAPTCHA token could not be obtained:', err);
+    }
+  }
+
+  data.recaptchaToken = recaptchaToken;
+
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
     fields_submitted: ['name', 'email', 'message'],
-    data_processing_consent: data.consent
+    data_processing_consent: data.consent_given
   });
 
   // Simulate form submission
@@ -122,13 +146,12 @@ function initializeAccessibility() {
  * Following compliance-rules package standards
  */
 function initializeGDPRCompliance() {
-  // Check for existing consent
-  const consent = localStorage.getItem('gdpr_consent');
-  
+  // Check for existing cookie consent
+  const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+
   if (!consent) {
-    // In a real application, show consent banner
-    console.log('🔒 GDPR compliance: No existing consent found');
-    // showConsentBanner(); // Would implement consent management
+    // Show cookie consent banner on first visit
+    showCookieConsent();
   }
 
   // Set up data retention policy (7 years for audit logs)
@@ -140,8 +163,73 @@ function initializeGDPRCompliance() {
 
   // Clean up old data based on retention policy
   cleanupExpiredData(retentionPolicy);
-  
+
   console.log('🔒 GDPR compliance features initialized');
+}
+
+/**
+ * Show the cookie consent banner
+ */
+function showCookieConsent() {
+  const banner = document.getElementById('cookie-consent-banner');
+  if (!banner) return;
+
+  banner.innerHTML = `
+    <div class="cookie-consent__content">
+      <h2 id="cookie-consent-title" class="cookie-consent__title">Cookie Preferences</h2>
+      <p id="cookie-consent-description" class="cookie-consent__description">
+        We use cookies to improve your experience. Please choose which cookies you allow.
+        For more information, see our <a href="/privacy-policy" rel="noopener noreferrer">privacy policy</a>.
+      </p>
+      <div class="cookie-consent__actions">
+        <button type="button" class="submit-button" onclick="acceptAllCookies()">Accept All</button>
+        <button type="button" class="btn-secondary" onclick="acceptNecessaryCookiesOnly()">Necessary Only</button>
+      </div>
+    </div>
+  `;
+  banner.style.display = 'block';
+  banner.removeAttribute('aria-hidden');
+}
+
+/**
+ * Accept all cookie categories
+ */
+function acceptAllCookies() {
+  saveCookieConsent({ necessary: true, analytics: true, marketing: true });
+}
+
+/**
+ * Accept only strictly necessary cookies
+ */
+function acceptNecessaryCookiesOnly() {
+  saveCookieConsent({ necessary: true, analytics: false, marketing: false });
+}
+
+/**
+ * Save cookie consent preferences
+ * @param {Object} preferences - Cookie preference categories
+ */
+function saveCookieConsent(preferences) {
+  const consentRecord = {
+    ...preferences,
+    necessary: true, // Always required
+    timestamp: new Date().toISOString(),
+    version: '1.0'
+  };
+  localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consentRecord));
+
+  logUserInteraction('cookie_consent_given', {
+    analytics: preferences.analytics,
+    marketing: preferences.marketing,
+    timestamp: consentRecord.timestamp
+  });
+
+  const banner = document.getElementById('cookie-consent-banner');
+  if (banner) {
+    banner.style.display = 'none';
+    banner.setAttribute('aria-hidden', 'true');
+  }
+  console.log('🍪 Cookie preferences saved');
 }
 
 /**
@@ -334,9 +422,15 @@ function announceToScreenReader(message, priority = 'polite') {
 window.corporateWebsite = {
   showMessage,
   handleSubmit,
-  logUserInteraction
+  logUserInteraction,
+  showCookieConsent,
+  acceptAllCookies,
+  acceptNecessaryCookiesOnly
 };
 
 // Make functions globally available (for inline event handlers)
 window.showMessage = showMessage;
 window.handleSubmit = handleSubmit;
+window.showCookieConsent = showCookieConsent;
+window.acceptAllCookies = acceptAllCookies;
+window.acceptNecessaryCookiesOnly = acceptNecessaryCookiesOnly;

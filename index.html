@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corporate Website</title>
     <link rel="stylesheet" href="/style.css">
+    <!-- Google reCAPTCHA v3 - loaded asynchronously to avoid blocking render -->
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY" async defer></script>
 </head>
 <body>
     <div id="app">
+        <!-- Cookie consent banner (populated by main.js) -->
+        <div id="cookie-consent-banner" role="dialog" aria-modal="true" aria-labelledby="cookie-consent-title" aria-hidden="true" style="display:none"></div>
         <header class="header">
             <nav class="nav">
                 <div class="nav-brand">
@@ -84,6 +88,23 @@
                             <textarea id="message" name="message" rows="4" required aria-describedby="message-help"></textarea>
                             <small id="message-help">Tell us how we can help you</small>
                         </div>
+                        <div class="form-group">
+                            <div class="form-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="privacyConsent"
+                                    name="privacyConsent"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="privacyConsent-help"
+                                >
+                                <label for="privacyConsent">
+                                    I agree to the <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">privacy policy</a>
+                                    and consent to the processing of my personal data *
+                                </label>
+                            </div>
+                            <small id="privacyConsent-help">Required for GDPR compliance. Your data will be handled per our privacy policy.</small>
+                        </div>
                         <button type="submit" class="submit-button">Send Message</button>
                     </form>
                 </div>
@@ -95,6 +116,10 @@
                 <p>&copy; 2025 Corporate Inc. All rights reserved. | Built with APM Dependencies System</p>
                 <p class="privacy-notice">
                     <small>This website follows GDPR compliance standards and accessibility guidelines through APM package management.</small>
+                </p>
+                <p>
+                    <a href="/privacy-policy">Privacy Policy</a> |
+                    <button type="button" onclick="showCookieConsent()" class="btn-link">Cookie Preferences</button>
                 </p>
             </div>
         </footer>
