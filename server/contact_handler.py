@@ -181,8 +181,15 @@ def verify_recaptcha_token(token: str, min_score: float = 0.5) -> bool:
         score = result.get('score', 0.0)
         return score >= min_score
 
-    except Exception:
-        # On network or parse errors, fail open to avoid blocking legitimate users
+    except (ValueError, json.JSONDecodeError) as e:
+        # Malformed response or invalid token – fail closed
+        audit_logger.warning(f"reCAPTCHA verification failed (invalid data): {type(e).__name__}")
+        return False
+
+    except Exception as e:
+        # Network or transient errors – fail open to avoid blocking legitimate users
+        # but log for monitoring
+        audit_logger.warning(f"reCAPTCHA verification skipped due to network error: {type(e).__name__}")
         return True
 
 
