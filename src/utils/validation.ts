@@ -31,6 +31,11 @@ export function validateEmail(email: string): boolean {
   if (!emailRegex.test(email)) {
     return false;
   }
+
+  // Consecutive dots are not valid in email addresses (RFC 5321)
+  if (email.includes('..')) {
+    return false;
+  }
   
   // Length checks
   if (email.length > 254) { // RFC 5321 limit

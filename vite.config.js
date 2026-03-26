@@ -1,6 +1,15 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    css: false,
+    setupFiles: ['./tests/setup.ts'],
+  },
+  esbuild: {
+    jsxInject: `import React from 'react'`,
+  },
   // Base public path when served in development or production
   base: './',
   

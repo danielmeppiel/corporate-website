@@ -7,6 +7,8 @@ interface ContactFormData {
   name: string;
   email: string;
   message: string;
+  consent_given: boolean;
+  recaptchaToken: string;
 }
 
 interface AuditLogEntry {
@@ -43,7 +45,6 @@ export async function submitContactForm(formData: ContactFormData): Promise<void
       body: JSON.stringify({
         ...formData,
         timestamp: new Date().toISOString(),
-        consent_given: true,
         retention_period: '5_years' // Data retention policy
       })
     });
@@ -83,6 +84,11 @@ function validateContactFormData(data: ContactFormData): void {
   
   if (!data.message || typeof data.message !== 'string' || data.message.length > 5000) {
     throw new Error('Invalid message field');
+  }
+
+  // Consent is required for GDPR compliance
+  if (!data.consent_given) {
+    throw new Error('Privacy consent is required');
   }
   
   // Email format validation

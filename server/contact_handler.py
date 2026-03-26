@@ -7,6 +7,9 @@ import json
 import hashlib
 import logging
 import uuid
+import os
+import urllib.request
+import urllib.parse
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
@@ -142,6 +145,47 @@ def validate_csrf_token(token: str, session_token: str) -> bool:
     return token and len(token) == 32 and token.isalnum()
 
 
+def verify_recaptcha_token(token: str, min_score: float = 0.5) -> bool:
+    """
+    Verify Google reCAPTCHA v3 token with Google's API.
+    Returns True if the token is valid and score meets the minimum threshold.
+    An empty token is allowed (returns True) to support environments without reCAPTCHA.
+    """
+    if not token:
+        # Token not provided – allow submission (reCAPTCHA may not be configured)
+        return True
+
+    secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+    if not secret_key:
+        # Secret key not configured – skip verification
+        return True
+
+    try:
+        payload = urllib.parse.urlencode({
+            'secret': secret_key,
+            'response': token
+        }).encode('utf-8')
+
+        req = urllib.request.Request(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data=payload,
+            method='POST'
+        )
+
+        with urllib.request.urlopen(req, timeout=5) as response:
+            result = json.loads(response.read().decode('utf-8'))
+
+        if not result.get('success', False):
+            return False
+
+        score = result.get('score', 0.0)
+        return score >= min_score
+
+    except Exception:
+        # On network or parse errors, fail open to avoid blocking legitimate users
+        return True
+
+
 class ContactFormHandler:
     """Handle contact form submissions with compliance measures"""
     
@@ -189,6 +233,11 @@ class ContactFormHandler:
             # Validate CSRF token
             if not validate_csrf_token(csrf_token, session_token):
                 raise ValueError("Invalid CSRF token")
+
+            # Verify reCAPTCHA token (bot protection)
+            recaptcha_token = form_data.get('recaptchaToken', '')
+            if not verify_recaptcha_token(recaptcha_token):
+                raise ValueError("reCAPTCHA verification failed")
             
             # Check rate limiting
             if not self.check_rate_limit(ip_hash):
