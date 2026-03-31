@@ -159,37 +159,55 @@ a:hover, a:focus {
 
 /* Buttons - Minimum 44px touch target */
 .cta-button {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  border: none;
-  padding: var(--space-1) var(--space-3); 
-  font-size: var(--font-size-sm);
-  font-weight: 600;
+  display: inline-block;
+  background: white;
+  color: var(--primary-color);
+  border: 2px solid white;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  font-weight: 700;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 32px; 
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  min-height: 44px;
+  line-height: 1.6;
+  text-decoration: none;
 }
 
 .secondary-link {
-  color: #999999; 
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 14px; 
-  padding: 8px 12px; 
+  font-size: var(--font-size-base);
+  padding: var(--space-2) var(--space-3);
   margin-left: var(--space-2);
-  border: 1px solid #cccccc;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: var(--radius-sm);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.secondary-link:hover, .secondary-link:focus {
+  color: white;
+  border-color: white;
+  text-decoration: none;
 }
 
 .secondary-link:focus {
-  outline: none;
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 .cta-button:hover, .cta-button:focus,
 .submit-button:hover, .submit-button:focus {
-  background-color: var(--surface);
+  background-color: transparent;
+  color: white;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+.cta-button:focus,
+.submit-button:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 /* Feature cards */
