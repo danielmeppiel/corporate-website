@@ -27,8 +27,8 @@
                 <div class="hero-content">
                     <h2>Welcome to Corporate Inc.</h2>
                     <p>Building the future with AI-Native Development</p>
-                    <button class="cta-button" onclick="showMessage()">Get Started</button>
-                    <a href="#contact" class="secondary-link">Learn More</a>
+                    <a href="#contact" class="cta-button">Request Consultation</a>
+                    <a href="#services" class="secondary-link">Our Services</a>
                 </div>
             </section>
 
@@ -67,7 +67,7 @@
 
             <section id="contact" class="section">
                 <div class="container">
-                    <h2>Contact Us</h2>
+                    <h2>Request a Consultation</h2>
                     <form class="contact-form" onsubmit="handleSubmit(event)">
                         <div class="form-group">
                             <label for="name">Name *</label>
@@ -80,11 +80,32 @@
                             <small id="email-help">We'll never share your email with anyone else</small>
                         </div>
                         <div class="form-group">
+                            <label for="service-interest">Service Interest</label>
+                            <select id="service-interest" name="serviceInterest" aria-describedby="service-help">
+                                <option value="">-- Select a service --</option>
+                                <option value="web-development">Web Development with Accessibility Standards</option>
+                                <option value="gdpr-consulting">GDPR Compliance Consulting</option>
+                                <option value="ai-training">AI-Native Development Training</option>
+                                <option value="design-system">Design System Implementation</option>
+                            </select>
+                            <small id="service-help">Which service are you interested in?</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="preferred-contact">Preferred Contact Method</label>
+                            <select id="preferred-contact" name="preferredContact" aria-describedby="contact-method-help">
+                                <option value="">-- Select a method --</option>
+                                <option value="email">Email</option>
+                                <option value="phone">Phone</option>
+                                <option value="video-call">Video Call</option>
+                            </select>
+                            <small id="contact-method-help">How would you like us to reach you?</small>
+                        </div>
+                        <div class="form-group">
                             <label for="message">Message *</label>
                             <textarea id="message" name="message" rows="4" required aria-describedby="message-help"></textarea>
                             <small id="message-help">Tell us how we can help you</small>
                         </div>
-                        <button type="submit" class="submit-button">Send Message</button>
+                        <button type="submit" class="submit-button">Request Consultation</button>
                     </form>
                 </div>
             </section>

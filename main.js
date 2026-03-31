@@ -13,20 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Show welcome message - demonstrates user interaction logging for audit trails
- */
-function showMessage() {
-  // Log user interaction (compliance requirement for audit trails)
-  logUserInteraction('cta_button_click', {
-    timestamp: new Date().toISOString(),
-    action: 'hero_cta_clicked',
-    user_agent: navigator.userAgent.substring(0, 100) // Truncated for privacy
-  });
-
-  alert('🎉 Welcome! This site is built with APM dependencies for compliance and design standards.');
-}
-
-/**
  * Handle contact form submission with GDPR compliance
  * @param {Event} event - Form submission event
  */
@@ -37,6 +23,8 @@ function handleSubmit(event) {
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
+    serviceInterest: formData.get('serviceInterest') || '',
+    preferredContact: formData.get('preferredContact') || '',
     message: formData.get('message'),
     timestamp: new Date().toISOString(),
     consent: true // In real app, this would come from explicit consent checkbox
@@ -58,12 +46,12 @@ function handleSubmit(event) {
   // Log form submission for compliance audit trail
   logUserInteraction('form_submission', {
     timestamp: data.timestamp,
-    fields_submitted: ['name', 'email', 'message'],
+    fields_submitted: ['name', 'email', 'serviceInterest', 'preferredContact', 'message'],
     data_processing_consent: data.consent
   });
 
   // Simulate form submission
-  showSuccess('Thank you for your message! We\'ll get back to you soon.');
+  showSuccess('Thank you for your consultation request! We\'ll get back to you soon.');
   event.target.reset();
 }
 
@@ -332,11 +320,9 @@ function announceToScreenReader(message, priority = 'polite') {
 
 // Export functions for potential testing or external use
 window.corporateWebsite = {
-  showMessage,
   handleSubmit,
   logUserInteraction
 };
 
 // Make functions globally available (for inline event handlers)
-window.showMessage = showMessage;
 window.handleSubmit = handleSubmit;

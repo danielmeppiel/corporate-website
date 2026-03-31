@@ -31,6 +31,8 @@ describe('ContactForm Component', () => {
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/service interest/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/preferred contact method/i)).toBeInTheDocument();
     
     // Check for required indicators
     expect(screen.getByText(/name \*/i)).toBeInTheDocument();
@@ -46,7 +48,7 @@ describe('ContactForm Component', () => {
   it('validates form fields and shows appropriate error messages', async () => {
     render(<ContactForm />);
     
-    const submitButton = screen.getByRole('button', { name: /send message/i });
+    const submitButton = screen.getByRole('button', { name: /request consultation/i });
     
     // Submit empty form
     fireEvent.click(submitButton);
@@ -62,7 +64,7 @@ describe('ContactForm Component', () => {
     render(<ContactForm />);
     
     const emailInput = screen.getByLabelText(/email/i);
-    const submitButton = screen.getByRole('button', { name: /send message/i });
+    const submitButton = screen.getByRole('button', { name: /request consultation/i });
     
     // Enter invalid email
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
@@ -91,7 +93,7 @@ describe('ContactForm Component', () => {
     });
     
     // Submit form
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    fireEvent.click(screen.getByRole('button', { name: /request consultation/i }));
     
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith({
@@ -120,7 +122,7 @@ describe('ContactForm Component', () => {
       target: { value: 'Test message' } 
     });
     
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    fireEvent.click(screen.getByRole('button', { name: /request consultation/i }));
     
     await waitFor(() => {
       expect(mockLogAudit).toHaveBeenCalledWith(
@@ -151,7 +153,7 @@ describe('ContactForm Component', () => {
     });
     
     // Submit form
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    fireEvent.click(screen.getByRole('button', { name: /request consultation/i }));
     
     await waitFor(() => {
       expect(screen.getByText(/failed to submit form/i)).toBeInTheDocument();
@@ -175,7 +177,7 @@ describe('ContactForm Component', () => {
       target: { value: 'Test message' } 
     });
     
-    const submitButton = screen.getByRole('button', { name: /send message/i });
+    const submitButton = screen.getByRole('button', { name: /request consultation/i });
     fireEvent.click(submitButton);
     
     // Button should be disabled and show loading state
@@ -250,7 +252,7 @@ describe('Accessibility Compliance', () => {
   it('provides proper ARIA attributes for error states', async () => {
     render(<ContactForm />);
     
-    const submitButton = screen.getByRole('button', { name: /send message/i });
+    const submitButton = screen.getByRole('button', { name: /request consultation/i });
     fireEvent.click(submitButton);
     
     await waitFor(() => {
@@ -274,7 +276,7 @@ describe('Accessibility Compliance', () => {
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'john@example.com' } });
     fireEvent.change(screen.getByLabelText(/message/i), { target: { value: 'Test' } });
     
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    fireEvent.click(screen.getByRole('button', { name: /request consultation/i }));
     
     // Check that success message has proper ARIA attributes
     await waitFor(() => {
