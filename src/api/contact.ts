@@ -6,6 +6,8 @@
 interface ContactFormData {
   name: string;
   email: string;
+  serviceInterest?: string;
+  preferredContact?: string;
   message: string;
 }
 
@@ -83,6 +85,16 @@ function validateContactFormData(data: ContactFormData): void {
   
   if (!data.message || typeof data.message !== 'string' || data.message.length > 5000) {
     throw new Error('Invalid message field');
+  }
+
+  if (data.serviceInterest !== undefined && data.serviceInterest !== null &&
+      (typeof data.serviceInterest !== 'string' || data.serviceInterest.length > 100)) {
+    throw new Error('Invalid serviceInterest field');
+  }
+
+  if (data.preferredContact !== undefined && data.preferredContact !== null &&
+      (typeof data.preferredContact !== 'string' || data.preferredContact.length > 50)) {
+    throw new Error('Invalid preferredContact field');
   }
   
   // Email format validation

@@ -10,6 +10,8 @@ export const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    serviceInterest: '',
+    preferredContact: '',
     message: ''
   });
 
@@ -40,7 +42,7 @@ export const ContactForm = () => {
       await submitContactForm(formData);
       
       // Reset form and show success
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', serviceInterest: '', preferredContact: '', message: '' });
       setErrors({});
       
     } catch (error) {
@@ -123,6 +125,51 @@ export const ContactForm = () => {
       </div>
 
       <div className="form-group">
+        <label htmlFor="serviceInterest" className="form-label">
+          Service Interest
+        </label>
+        <select
+          id="serviceInterest"
+          name="serviceInterest"
+          className="form-input"
+          value={formData.serviceInterest}
+          onChange={(e) => setFormData({ ...formData, serviceInterest: e.target.value })}
+          aria-describedby="service-help"
+        >
+          <option value="">-- Select a service --</option>
+          <option value="web-development">Web Development with Accessibility Standards</option>
+          <option value="gdpr-consulting">GDPR Compliance Consulting</option>
+          <option value="ai-training">AI-Native Development Training</option>
+          <option value="design-system">Design System Implementation</option>
+        </select>
+        <div id="service-help" className="form-help">
+          Which service are you interested in?
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="preferredContact" className="form-label">
+          Preferred Contact Method
+        </label>
+        <select
+          id="preferredContact"
+          name="preferredContact"
+          className="form-input"
+          value={formData.preferredContact}
+          onChange={(e) => setFormData({ ...formData, preferredContact: e.target.value })}
+          aria-describedby="contact-method-help"
+        >
+          <option value="">-- Select a method --</option>
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+          <option value="video-call">Video Call</option>
+        </select>
+        <div id="contact-method-help" className="form-help">
+          How would you like us to reach you?
+        </div>
+      </div>
+
+      <div className="form-group">
         <label htmlFor="message" className="form-label">
           Message *
         </label>
@@ -159,7 +206,7 @@ export const ContactForm = () => {
         disabled={isSubmitting}
         aria-describedby="submit-help"
       >
-        {isSubmitting ? 'Sending...' : 'Send Message'}
+        {isSubmitting ? 'Sending...' : 'Request Consultation'}
       </button>
       <div id="submit-help" className="form-help">
         By submitting this form, you agree to our privacy policy
