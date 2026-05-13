@@ -81,7 +81,7 @@ function initializeAccessibility() {
     position: absolute;
     top: -40px;
     left: 6px;
-    background: #2563eb;
+    background: #047857;
     color: white;
     padding: 8px;
     text-decoration: none;
