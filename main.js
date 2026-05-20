@@ -23,7 +23,7 @@ function showMessage() {
     user_agent: navigator.userAgent.substring(0, 100) // Truncated for privacy
   });
 
-  alert('🎉 Welcome! This site is built with APM dependencies for compliance and design standards.');
+  alert('🎉 Welcome to Contoso Industries! We are building the future with APM dependencies for compliance and design standards.');
 }
 
 /**
